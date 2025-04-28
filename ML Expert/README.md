@@ -1,35 +1,48 @@
-Project Report: Heart Disease Risk Prediction
-Domain Proyek
+#Project Report: Heart Disease Risk Prediction
+
+
+## Domain Proyek
 Penyakit jantung merupakan penyebab utama kematian di seluruh dunia menurut World Health Organization (WHO). Salah satu tantangan utama dalam penanganannya adalah deteksi dini dan pencegahan terhadap individu yang memiliki risiko tinggi. Dengan meningkatnya data hasil medical check-up (MCU), kita memiliki peluang untuk memanfaatkan machine learning untuk memprediksi risiko penyakit jantung berdasarkan parameter kesehatan individu.
+
 Mengapa penting:
 Deteksi dini memungkinkan intervensi gaya hidup atau medis yang dapat menyelamatkan jiwa.
 Penyakit jantung sering tidak menunjukkan gejala hingga tahap lanjut.
 Pemodelan prediktif dapat digunakan oleh penyedia layanan kesehatan untuk skrining cepat populasi besar.
+
 Referensi pendukung:
 Heart disease prediction using ML techniques – PMC9317494
 World Health Organization: Cardiovascular Diseases Fact Sheet (2023)
-Business Understanding
-Problem Statement
+
+## Business Understanding
+
+### Problem Statement
 Bagaimana kita dapat mengklasifikasikan individu dengan risiko tinggi terkena serangan jantung berdasarkan data hasil medical check-up?
-Goals
+
+###Goals
 Membangun model klasifikasi yang dapat memprediksi risiko serangan jantung berdasarkan fitur klinis dan kebiasaan gaya hidup.
-Solution Statement
+
+### Solution Statement
 Menggunakan Logistic Regression sebagai baseline model yang interpretatif.
 Menggunakan Random Forest Classifier dan XGBoost untuk menangkap interaksi non-linear dan meningkatkan akurasi.
 Melakukan feature engineering dan scoring terhadap parameter risiko berdasarkan literatur medis.
 Melakukan hyperparameter tuning untuk model terbaik.
-Evaluation Metrics
+
+
+### Evaluation Metrics
 Akurasi
 Precision
 Recall
 F1-score
 ROC-AUC
-Data Understanding
-Dataset
+
+
+### Data Understanding
+#### Dataset
 Dataset diambil dari hasil medical check-up (MCU) internal dan disediakan dalam format CSV. Dataset ini tidak tersedia secara publik tetapi disesuaikan menyerupai hasil pemeriksaan umum yang biasa dilakukan.
 Jumlah data: 3000 baris
 Link Dataset (dummy): /mnt/data/dataset_mcu.csv
-Fitur
+
+#### Fitur
 Beberapa fitur penting:
 Blood Pressure (s/d): Tekanan darah sistolik/diastolik
 Cholesterol: Kadar kolesterol total
@@ -42,54 +55,49 @@ Family History: Riwayat penyakit jantung
 Visualisasi dan EDA
 Univariate analysis: distribusi fitur numerik dan kategorikal
 Multivariate analysis: heatmap korelasi, boxplot antar label target
-Data Preparation
+
+
+### Data Preparation
 Teknik yang dilakukan:
-Imputasi nilai kosong menggunakan modus (kategori) dan median (numerik)
-Label Encoding untuk fitur kategorikal
-One-Hot Encoding untuk fitur nominal dengan >2 kategori
-Feature Engineering: membuat skor risiko berdasarkan referensi medis
-Normalisasi pada fitur numerik jika diperlukan oleh algoritma (misal Logistic Regression)
+- Imputasi nilai kosong menggunakan modus (kategori) dan median (numerik)
+- Label Encoding untuk fitur kategorikal
+- One-Hot Encoding untuk fitur nominal dengan >2 kategori
+- Feature Engineering: membuat skor risiko berdasarkan referensi medis
+- Normalisasi pada fitur numerik jika diperlukan oleh algoritma (misal Logistic Regression)
 Alasan: Untuk memastikan data dapat digunakan oleh algoritma ML dan meningkatkan kualitas input model.
-Modeling
+
+
+### Modeling
 Model yang digunakan:
-Logistic Regression
-Baseline, interpretatif
+- Logistic Regression
+- Baseline, interpretatif
 Cenderung kurang menangkap interaksi non-linear
-Random Forest
+- Random Forest
 Menangkap non-linearitas dan interaksi fitur
 Robust terhadap outlier dan data tidak terdistribusi normal
-XGBoost
+- XGBoost
 Gradient boosting yang efisien
 Dikenal memiliki performa sangat baik untuk klasifikasi
-Tuning dan Seleksi Model
+- Tuning dan Seleksi Model
 GridSearchCV digunakan untuk memilih parameter optimal (misal: max_depth, n_estimators)
 SHAP analysis dilakukan untuk interpretasi model
 Model terbaik dipilih berdasarkan ROC-AUC tertinggi dan keseimbangan metrik lainnya
-Evaluation
+
+
+###Evaluation
 Metrik:
 Akurasi: Proporsi prediksi benar
 Precision: Proporsi positif yang diprediksi benar-benar positif
 Recall: Proporsi aktual positif yang berhasil ditangkap model
 F1-score: Harmonik dari precision dan recall
 ROC-AUC: Kemampuan model membedakan antara kelas positif dan negatif
+
 Hasil:
 Logistic Regression: baseline akurasi 0.75
 Random Forest: akurasi 0.82, ROC-AUC 0.88
 XGBoost: akurasi 0.84, ROC-AUC 0.91
+
 Model terbaik adalah XGBoost berdasarkan evaluasi metrik dan interpretasi SHAP.
-Struktur Laporan
-Laporan ini disusun sesuai dengan struktur:
-Domain Proyek
-Business Understanding
-Data Understanding
-Data Preparation
-Modeling
-Evaluation
-Markdown dan visualisasi mendukung pemahaman pembaca secara komprehensif.
-
-Catatan: Notebook Google Colab menyertakan semua visualisasi, EDA, preprocessing, pemodelan, evaluasi, dan interpretasi model secara runut dan dapat direproduksi.
-
-
 
 
 
