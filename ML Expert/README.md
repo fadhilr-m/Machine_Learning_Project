@@ -1,7 +1,7 @@
-#Project Report: Heart Disease Risk Prediction
+# Project Report: Heart Disease Risk Prediction
 
 
-## Domain Proyek
+# Domain Proyek
 Penyakit jantung merupakan penyebab utama kematian di seluruh dunia menurut World Health Organization (WHO). Salah satu tantangan utama dalam penanganannya adalah deteksi dini dan pencegahan terhadap individu yang memiliki risiko tinggi. Dengan meningkatnya data hasil medical check-up (MCU), kita memiliki peluang untuk memanfaatkan machine learning untuk memprediksi risiko penyakit jantung berdasarkan parameter kesehatan individu.
 
 Mengapa penting:
@@ -13,22 +13,22 @@ Referensi pendukung:
 Heart disease prediction using ML techniques – PMC9317494
 World Health Organization: Cardiovascular Diseases Fact Sheet (2023)
 
-## Business Understanding
+# Business Understanding
 
-### Problem Statement
+## Problem Statement
 Bagaimana kita dapat mengklasifikasikan individu dengan risiko tinggi terkena serangan jantung berdasarkan data hasil medical check-up?
 
-###Goals
+## Goals
 Membangun model klasifikasi yang dapat memprediksi risiko serangan jantung berdasarkan fitur klinis dan kebiasaan gaya hidup.
 
-### Solution Statement
-Menggunakan Logistic Regression sebagai baseline model yang interpretatif.
-Menggunakan Random Forest Classifier dan XGBoost untuk menangkap interaksi non-linear dan meningkatkan akurasi.
-Melakukan feature engineering dan scoring terhadap parameter risiko berdasarkan literatur medis.
-Melakukan hyperparameter tuning untuk model terbaik.
+## Solution Statement
+- Menggunakan Logistic Regression sebagai baseline model yang interpretatif.
+- Menggunakan Random Forest Classifier dan XGBoost untuk menangkap interaksi non-linear dan meningkatkan akurasi.
+- Melakukan feature engineering dan scoring terhadap parameter risiko berdasarkan literatur medis.
+- Melakukan hyperparameter tuning untuk model terbaik.
 
 
-### Evaluation Metrics
+## Evaluation Metrics
 Akurasi
 Precision
 Recall
@@ -36,13 +36,13 @@ F1-score
 ROC-AUC
 
 
-### Data Understanding
-#### Dataset
+## Data Understanding
+### Dataset
 Dataset diambil dari hasil medical check-up (MCU) internal dan disediakan dalam format CSV. Dataset ini tidak tersedia secara publik tetapi disesuaikan menyerupai hasil pemeriksaan umum yang biasa dilakukan.
 Jumlah data: 3000 baris
 Link Dataset (dummy): /mnt/data/dataset_mcu.csv
 
-#### Fitur
+### Fitur
 Beberapa fitur penting:
 Blood Pressure (s/d): Tekanan darah sistolik/diastolik
 Cholesterol: Kadar kolesterol total
@@ -57,7 +57,7 @@ Univariate analysis: distribusi fitur numerik dan kategorikal
 Multivariate analysis: heatmap korelasi, boxplot antar label target
 
 
-### Data Preparation
+## Data Preparation
 Teknik yang dilakukan:
 - Imputasi nilai kosong menggunakan modus (kategori) dan median (numerik)
 - Label Encoding untuk fitur kategorikal
@@ -67,7 +67,7 @@ Teknik yang dilakukan:
 Alasan: Untuk memastikan data dapat digunakan oleh algoritma ML dan meningkatkan kualitas input model.
 
 
-### Modeling
+## Modeling
 Model yang digunakan:
 - Logistic Regression
 - Baseline, interpretatif
@@ -84,7 +84,7 @@ SHAP analysis dilakukan untuk interpretasi model
 Model terbaik dipilih berdasarkan ROC-AUC tertinggi dan keseimbangan metrik lainnya
 
 
-###Evaluation
+## Evaluation
 Metrik:
 Akurasi: Proporsi prediksi benar
 Precision: Proporsi positif yang diprediksi benar-benar positif
