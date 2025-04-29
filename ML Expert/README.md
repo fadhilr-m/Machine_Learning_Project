@@ -1,8 +1,7 @@
-# Project Report: Heart Disease Risk Prediction
+# Heart Disease Risk Prediction Report - Fadhil Ramadhan Masthofani
 
+## Domain Proyek
 
-# Domain Proyek
-## Latar Belakang
 Penyakit jantung koroner merupakan penyebab utama kematian di seluruh dunia menurut World Health Organization (WHO). Salah satu manifestasi paling berbahaya dari penyakit ini adalah serangan jantung (myocardial infarction). Deteksi dini terhadap risiko serangan jantung sangat krusial untuk mencegah komplikasi serius dan meningkatkan kualitas hidup pasien.
 Dalam era data-driven saat ini, analisis data kesehatan secara cerdas menjadi kunci untuk membantu profesional medis dalam mengidentifikasi individu dengan risiko tinggi secara lebih cepat dan akurat. Dengan menggunakan teknik machine learning, kita dapat membangun model prediktif berbasis data medical check-up (MCU) untuk memperkirakan kemungkinan seseorang mengalami serangan jantung.
 
@@ -16,12 +15,14 @@ Referensi:
 - World Health Organization - Cardiovascular diseases (CVDs) Fact Sheet, 2023.
 - Rajpurkar et al., Deep Learning for Cardiovascular Risk Prediction, Nature Medicine, 2019.
 
-# Business Understanding
+## Business Understanding
 
-## Problem Statement
+### Problem Statement
+
 Bagaimana kita dapat mengklasifikasikan individu dengan risiko tinggi terkena serangan jantung berdasarkan data hasil medical check-up?
 
-## Goals
+### Goals
+
 Membangun model klasifikasi yang dapat memprediksi risiko serangan jantung berdasarkan fitur klinis dan kebiasaan gaya hidup.
 
 ## Solution Statement
@@ -31,21 +32,16 @@ Membangun model klasifikasi yang dapat memprediksi risiko serangan jantung berda
 - Melakukan hyperparameter tuning untuk model terbaik.
 
 
-## Evaluation Metrics
-Akurasi
-Precision
-Recall
-F1-score
-ROC-AUC
-
-
 ## Data Understanding
+
 ### Dataset
+
 Dataset diambil dari hasil medical check-up (MCU) internal dan disediakan dalam format CSV. Dataset ini tidak tersedia secara publik tetapi disesuaikan menyerupai hasil pemeriksaan umum yang biasa dilakukan.
 Jumlah data: 3000 baris
 Link Dataset (dummy): /mnt/data/dataset_mcu.csv
 
 ### Fitur
+
 Beberapa fitur penting:
 Blood Pressure (s/d): Tekanan darah sistolik/diastolik
 Cholesterol: Kadar kolesterol total
