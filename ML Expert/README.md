@@ -59,8 +59,7 @@ Fiturnya adalah :
 | Bone Density (g/cm²) | Tingkat kepadatan tulang, diukur dalam gram per sentimeter persegi |
 | Vision Sharpness | Penilaian ketajaman penglihatan pada skala 0 (sangat buram) hingga 100 (sangat tajam) |
 | Hearing Ability (dB) |Tingkat pendengaran seseorang dalam desibel.
-Tingkat Aktivitas Fisik: Kategori frekuensi aktivitas (rendah, sedang, atau tinggi) |
-| Physical Activity Level | Skala atau kategori aktivitas fisik |
+| Physical Activity Level | Kategori frekuensi aktivitas (rendah, sedang, atau tinggi) |
 | Smoking Status | Kategori kebiasaan merokok (“Tidak Pernah”, “Pernah”, atau “Sedang Merokok”) |
 | Alcohol Consumption | Frekuensi atau pola minum alkohol |
 | Diet | Pola makan yang diikuti, misalnya “Seimbang”, “Tinggi Protein”, “Rendah Karbohidrat”, dll |
@@ -77,22 +76,16 @@ Tingkat Aktivitas Fisik: Kategori frekuensi aktivitas (rendah, sedang, atau ting
 | Income Level | Pendapatan per tahun dalam dolar Amerika Serikat |
 | Age (years) | usia individu dalam tahun |
 
-Visualisasi dan EDA
-Univariate analysis: distribusi fitur numerik dan kategorikal
-Multivariate analysis: heatmap korelasi, boxplot antar label target
-
-
 ## Data Preparation
 
 Pada tahap ini dilakukan serangkaian proses untuk mempersiapkan data sebelum digunakan dalam pelatihan model machine learning.
 1. Handling Missing Values
-Dilakukan pengecekan terhadap missing values pada dataset.
-Fitur yang memiliki banyak missing value dihapus.
-Untuk fitur dengan missing value sedikit, dilakukan imputasi menggunakan metode:
-- Mean Imputation untuk data numerik (seperti kolesterol, gula darah).
-Most Frequent Imputation untuk data kategorikal
-Kesimpulan Analisis Data Numerik dan Kategorik
-Berdasarkan univariate analysis—melihat distribusi setiap fitur numerik dan frekuensi tiap kategori pada fitur kategorikal—dapat ditarik beberapa poin penting berikut:
+   Dilakukan pengecekan terhadap missing values pada dataset. Fitur yang memiliki banyak missing value dihapus. Untuk fitur dengan missing value sedikit, dilakukan imputasi menggunakan metode:
+   - Mean Imputation untuk data numerik (seperti kolesterol, gula darah).
+   - Most Frequent Imputation untuk data kategorikal
+
+  Kesimpulan Analisis Data Numerik dan Kategorik
+  Berdasarkan univariate analysis—melihat distribusi setiap fitur numerik dan frekuensi tiap kategori pada fitur kategorikal—dapat ditarik beberapa poin penting berikut:
 
 1. Fitur Numerik
 Age (Usia)
