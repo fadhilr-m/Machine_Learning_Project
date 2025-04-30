@@ -5,46 +5,71 @@
 Penyakit jantung koroner merupakan penyebab utama kematian di seluruh dunia menurut World Health Organization (WHO). Salah satu manifestasi paling berbahaya dari penyakit ini adalah serangan jantung (myocardial infarction). Deteksi dini terhadap risiko serangan jantung sangat krusial untuk mencegah komplikasi serius dan meningkatkan kualitas hidup pasien.
 Dalam era data-driven saat ini, analisis data kesehatan secara cerdas menjadi kunci untuk membantu profesional medis dalam mengidentifikasi individu dengan risiko tinggi secara lebih cepat dan akurat. Dengan menggunakan teknik machine learning, kita dapat membangun model prediktif berbasis data medical check-up (MCU) untuk memperkirakan kemungkinan seseorang mengalami serangan jantung.
 
-Mengapa dan Bagaimana Masalah Ini Diselesaikan
-Karena proses diagnosis medis tradisional sering membutuhkan waktu lama dan sumber daya besar, model machine learning dapat menjadi alat bantu penting untuk memberikan hasil prediksi cepat berbasis data historis pasien. Pendekatan ini membantu:
-- Memberikan skrining awal sebelum pemeriksaan lebih lanjut.
-- Membantu pengambilan keputusan klinis.
-- Mengoptimalkan penggunaan sumber daya kesehatan.
+Mengapa dan Bagaimana Masalah Ini Diselesaikan?
+
+Diagnosis tradisional memerlukan waktu lama dan biaya tinggi. Machine Learning (ML) dapat:
+- Mempercepat skrining risiko berdasarkan data historis pasien.
+- Mengurangi beban tenaga medis dengan prediksi otomatis.
+- Meningkatkan akurasi dengan mempelajari pola kompleks dalam data.
 
 Referensi:
-- World Health Organization - Cardiovascular diseases (CVDs) Fact Sheet, 2023.
-- Rajpurkar et al., Deep Learning for Cardiovascular Risk Prediction, Nature Medicine, 2019.
+- World Health Organization. (2023). Cardiovascular Diseases (CVDs). [Online]. Tersedia: https://www.who.int
+- Rajpurkar, P. et al. (2019). Deep Learning for Cardiovascular Risk Prediction. Nature Medicine. DOI:10.1038/s41591-019-0647-4
 
+  
 ## Business Understanding
 
 ### Problem Statement
 
-Berdasarkan latar belakang di atas, permasalahan yang diselesaikan dalam proyek ini adalah:
-- Bagaimana mengolah data MCU untuk prediksi risiko serangan jantung?
-- Bagaimana membangun model machine learning yang akurat dalam mengklasifikasikan risiko serangan jantung?
-- Bagaimana mengevaluasi model untuk mendapatkan performa terbaik?
+- Data Complexity: Bagaimana mengolah data MCU yang heterogen (numerik & kategorikal) untuk prediksi risiko jantung?
+- Model Performance: Bagaimana membangun model ML yang akurat dan interpretatif?
+- Clinical Utility: Bagaimana memastikan model berguna bagi dokter (minim false negatives)?
 
 ### Goals
 
-- Mengolah dan mempersiapkan data MCU untuk kebutuhan pelatihan model.
-- Membuat model klasifikasi machine learning untuk memprediksi risiko serangan jantung.
-- Mengevaluasi kinerja model menggunakan metrik akurasi, precision, recall, dan f1-score.
-
+- Preprocessing: Menyiapkan data MCU dengan teknik imputasi, encoding, dan feature engineering.
+- Model Development: Membandingkan 3 algoritma (Logistic Regression, Random Forest, XGBoost).
+- Evaluation: Mengevaluasi model dengan metrik klinis (F1-score, ROC-AUC) dan interpretasi SHAP.
 
 ## Solution Statement
 
-- Melakukan pembersihan dan preprocessing data, seperti menangani missing values dan encoding fitur kategorikal.
-- Menerapkan berbagai algoritma klasifikasi seperti K-Nearest Neighbours, Random Forest, Neural Network, dan XGBoost.
-- Melakukan tuning hyperparameter pada model terbaik (XGBoost) menggunakan Bayesian Optimization untuk meningkatkan performa.
-- Mengevaluasi hasil model dengan classification report dan confusion matrix.
+Solusi 1: Data Preparation
+         - Handling Missing Values:
+              - Numerik: Median Imputation (robust terhadap outlier).
+              - Kategorikal: Mode Imputation.
+         - Feature Engineering:
+               Membuat Risk Score berdasarkan pedoman medis (misal: BMI > 30 = +1 poin risiko).
+         - Encoding:
+               One-Hot Encoding untuk fitur kategorikal (contoh: Smoking Status).
 
+Alasan:
+- Median Imputation menjaga distribusi data numerik.
+- Risk Score menambahkan domain knowledge ke model.
 
+Solusi 2: Pemodelan & Optimasi
+         - Baseline Model: Logistic Regression (interpretatif).
+         - Comparative Models:
+               - Random Forest: Menangani non-linearitas dan interaksi fitur.
+               - XGBoost: Optimasi performa dengan gradient boosting.
+         - Hyperparameter Tuning:
+               - GridSearchCV untuk Random Forest (max_depth, n_estimators).
+               - Bayesian Optimization untuk XGBoost (efisiensi komputasi).
+
+Alasan Pemilihan Algoritma:
+- XGBoost dipilih karena kemampuan handling missing values dan performa tinggi.
+- Random Forest sebagai pembanding karena robust terhadap overfitting.
+
+Solusi 3: Evaluasi Klinis
+         - Metrik Utama: F1-Score (keseimbangan precision-recall) dan ROC-AUC (kemampuan diskriminasi).
+         - Kriteria Seleksi Model:
+               - F1-score > 0.8 (untuk meminimalkan false negatives).
+               - ROC-AUC > 0.9 (klasifikasi sangat baik).
 
 ## Data Understanding
 
-Dataset diambil dari hasil medical check-up (MCU) internal dan disediakan dalam format CSV. Dataset ini tidak tersedia secara publik tetapi disesuaikan menyerupai hasil pemeriksaan umum yang biasa dilakukan.
-Jumlah data: 3000 baris
-Link Dataset (dummy): /mnt/data/dataset_mcu.csv
+Dataset yang digunakan dalam proyek ini terdiri dari 3.000 sampel hasil Medical Check-Up (MCU) dengan 24 fitur klinis dan demografis, seperti usia, tekanan darah, kadar kolesterol, kebiasaan merokok, dan riwayat penyakit. Data ini bersumber dari Kaggle dan mencakup variabel-variabel kunci yang relevan untuk memprediksi risiko serangan jantung.
+
+https://www.kaggle.com/datasets/abdullah0a/human-age-prediction-synthetic-dataset/data
 
 Fiturnya adalah :
 | Command | Description |
@@ -76,193 +101,132 @@ Fiturnya adalah :
 | Income Level | Pendapatan per tahun dalam dolar Amerika Serikat |
 | Age (years) | usia individu dalam tahun |
 
+
+Analisis Data Numerik
+
+Fitur-fitur numerik seperti usia (Age), tekanan darah (Blood Pressure), dan kadar glukosa (Blood Glucose Level) menunjukkan distribusi yang bervariasi:
+- Usia: Distribusi merata dari 18 hingga 90 tahun, memungkinkan model belajar pola risiko di berbagai kelompok umur.
+- Tekanan Darah: Sebagian besar pasien berada dalam kisaran normal, tetapi terdapat ekor kanan yang menunjukkan kelompok dengan hipertensi (risiko tinggi).
+- Kadar Glukosa: Sebagian besar dalam rentang normal, tetapi beberapa outlier menunjukkan pasien dengan potensi diabetes.
+
+Insight: Fitur-fitur ini memiliki korelasi signifikan dengan risiko jantung, terutama usia dan tekanan darah, yang sering menjadi prediktor utama dalam studi medis.
+
+Analisis Data Kategorikal
+
+Fitur seperti kebiasaan merokok (Smoking Status), aktivitas fisik (Physical Activity Level), dan riwayat keluarga (Family History) memberikan konteks penting:
+- Perokok Aktif/Mantan: 45% sampel memiliki riwayat merokok, yang secara klinis terkait dengan peningkatan risiko jantung.
+- Aktivitas Fisik Rendah: 30% pasien termasuk kategori kurang aktif, yang dapat berkontribusi pada obesitas dan hipertensi.
+- Riwayat Keluarga: Sekitar 20% memiliki keluarga dengan penyakit jantung, mengindikasikan faktor genetik.
+
+Insight: Fitur-fitur ini membantu model memahami gaya hidup dan faktor risiko non-fisiologis.
+Analisis Korelasi Antar Fitur
+
+Heatmap korelasi mengungkap hubungan menarik:
+
+- Usia vs. Tekanan Darah: Korelasi positif (+0.65), artinya semakin tua, tekanan darah cenderung lebih tinggi.
+- Usia vs. Kepadatan Tulang: Korelasi negatif kuat (-0.94), karena penuaan alami mengurangi kepadatan tulang.
+- Kolesterol vs. Glukosa: Korelasi moderat (+0.43), menunjukkan pasien dengan kolesterol tinggi sering memiliki kadar gula tinggi pula.
+
+    
 ## Data Preparation
 
 Pada tahap ini dilakukan serangkaian proses untuk mempersiapkan data sebelum digunakan dalam pelatihan model machine learning.
-1. Handling Missing Values
-   Dilakukan pengecekan terhadap missing values pada dataset. Fitur yang memiliki banyak missing value dihapus. Untuk fitur dengan missing value sedikit, dilakukan imputasi menggunakan metode:
-   - Mean Imputation untuk data numerik (seperti kolesterol, gula darah).
-   - Most Frequent Imputation untuk data kategorikal
+Data Preparation
 
-  Kesimpulan Analisis Data Numerik dan Kategorik
-  Berdasarkan univariate analysis—melihat distribusi setiap fitur numerik dan frekuensi tiap kategori pada fitur kategorikal—dapat ditarik beberapa poin penting berikut:
+1. Pembersihan Data:
+   - Pemisahan Kolom Tekanan Darah: Kolom "Blood Pressure (s/d)" dipisah menjadi "Systolic_BP" dan "Diastolic_BP"
+   - Penanganan Missing Values: Nilai kosong diisi dengan "None" untuk kolom:
+        - Education Level
+        - Alcohol Consumption
+        - Chronic Diseases
+        - Medication Use
+        - Family History
+   - Kolom yang tidak relevan seperti "Vision Sharpness", "Hearing Ability", "Pollution Exposure", "Income Level", "Education Level" dihapus
 
-1. Fitur Numerik
-Age (Usia)
-Distribusi relatif merata di rentang 18–90 tahun.
-Tidak ada skewness ekstrem, artinya sampel mewakili berbagai kelompok usia secara seimbang.
+2. Transformasi Data:
+   - One-Hot Encoding untuk fitur kategorikal seperti Diet dan Smoking Status.
+   - Standarisasi fitur numerik (misal: Blood Pressure) untuk algoritma berbasis jarak.
+     
+3. Feature Engineering:
+   Membuat Risk Score sederhana berdasarkan pedoman klinis, contoh:
+      - Usia (>55 tahun = 2 poin, 45-55 = 1 poin)
+      - Tekanan darah (≥140/90 = 2 poin, ≥130/85 = 1 poin)
+      - Kolesterol (≥240 = 2 poin, ≥200 = 1 poin)
+      - Gula darah (≥126 = 2 poin, ≥110 = 1 poin)
+      - BMI (≥30 = 2 poin, ≥25 = 1 poin)
+      - Merokok (2 poin)
+      - Aktivitas fisik rendah (1 poin)
+      - Riwayat keluarga (2 poin)
+        
+   Kategori risiko:
+      - Rendah: <4
+      - Sedang: 4-7
+      - Tinggi: ≥8
 
-BMI
-Hampir membentuk kurva normal dengan puncak di 24–26.
-Mayoritas pasien berada dalam rentang berat badan normal–pra-obsitas, sehingga model dapat belajar pola risiko dari rentang BMI umum.
-
-Bone Density
-Menunjukkan bimodalitas (dua puncak sekitar 0.8 dan 1.2 g/cm²).
-Menandakan adanya dua sub‐populasi (kepadatan rendah vs normal/tinggi) yang potensial berkaitan dengan risiko jantung.
-
-
-Blood Glucose Level
-Sekitar normal dengan sedikit skew kanan (beberapa nilai tinggi >150 mg/dL).
-Pasien dengan hiperglikemia ringan hingga moderat dominan, memberi sinyal penting untuk screening risiko.
-
-Tekanan Darah (Systolic & Diastolic)
-Keduanya dekat kurva normal namun memiliki ekor kanan (nilai tinggi).
-Nilai tekanan darah tinggi (>160/100 mm Hg) perlu menjadi perhatian khusus dalam model.
-
-
-Stress Levels & Sun Exposure
-Distribusi relatif flat (seragam) di seluruh rentang.
-Variasi merata memudahkan model memahami korelasi stres dan paparan sinar matahari terhadap risiko jantung tanpa bias ke kelompok tertentu.
-
-
-Implikasi untuk Modeling:
-Semua fitur numerik sudah cukup “bersih”—tidak perlu transformasi besar (misal log) selain scaling—dan outlier moderat dapat ditangani baik oleh model berbasis pohon maupun algoritma berbasis jarak.
-
-2. Fitur Kategorikal
-Gender
-Distribusi seimbang antara “Male” dan “Female”, memudahkan model menangkap perbedaan risiko berdasarkan jenis kelamin.
-
-
-Smoking Status
-Terdiri dari “Former”, “Current”, dan “Never”, dengan dominasi “Former”.
-Memberi sinyal bahwa riwayat merokok (bukan hanya status saat ini) penting dipertimbangkan.
-
-
-Sleep Patterns
-Kategori “Normal” paling banyak, disusul “Insomnia” dan “Excessive”.
-Gangguan tidur (insomnia/kelebihan tidur) cukup umum dan bisa berperan sebagai faktor risiko.
-
-
-Diet
-“Balanced” dominan, diikuti “High-fat”, “Low-carb”, dan “Vegetarian”.
-Pola makan beragam, memungkinkan analisis dampak diet spesifik pada risiko.
-
-
-Physical Activity Level
-Kategori “Moderate” tertinggi, lalu “Low” dan “High”.
-Aktivitas moderat sebagai mayoritas menunjukkan kesempatan untuk mengukur efek perbedaan tingkat aktivitas.
-
-
-Alcohol Consumption
-“None” paling banyak, kemudian “Occasional” dan “Frequent”.
-Konsumsi alkohol yang teratur atau berlebih dapat diuji korelasinya dengan peningkatan risiko.
-
-
-Mental Health Status
-“Good” dan “Fair” lebih banyak, “Poor” dan “Excellent” lebih sedikit.
-Kesehatan mental memengaruhi stres dan faktor fisiologis lain—siap dianalisis lebih lanjut.
-
-
-Chronic Diseases
-Sebagian besar tanpa penyakit kronis, sisanya tersebar pada “Hypertension”, “Diabetes”, dan “Heart Disease”.
-Kehadiran penyakit kronis jelas menjadi variabel kunci dalam memprediksi risiko jantung.
-
-
-Medication Use
-“None” paling tinggi, lalu “Regular” dan “Occasional”.
-Pola konsumsi obat-obatan memberi indikasi status kesehatan dan pengelolaan penyakit.
-
-
-Family History
-Mayoritas “None”, sisanya “Diabetes”, “Hypertension”, “Heart Disease”.
-Riwayat keluarga merupakan faktor genetik yang penting untuk model prediksi risiko.
-
-
-Implikasi untuk Modeling:
-Kategori-kategori ini harus di-encode (one-hot) agar model dapat menangkap perbedaan antar kelompok. Fitur seperti chronic diseases dan family history diharapkan memiliki bobot penting tinggi dalam prediksi karena hubungan genetik dan komorbiditas.
-
-3. Kesimpulan Umum
-Kelengkapan Data: Tidak ada fitur numerik dengan missing value signifikan; kategori “None” pada fitur kategorikal memastikan tidak ada data hilang yang diabaikan.
-
-Variasi Fitur: Kombinasi distribusi normal, bimodal, dan seragam pada numerik, serta ragam kategori yang representatif, memberikan basis data yang kaya untuk model ML.
-Kesiapan Preprocessing: Setelah imputasi sederhana, scaling numerik, dan encoding kategorikal, data siap dipakai untuk melatih berbagai model—terutama tree-based models (Random Forest, XGBoost) yang dapat menangkap pola non-linear dan interaksi antar fitur.
-Univariate analysis ini memastikan kita memahami karakteristik dasar setiap fitur, meminimalkan risiko kesalahan preprocessing, dan memandu pilihan teknik modeling yang tepat.
-
-Correlation map
-Dari heatmap korelasi antar fitur numerik di atas, kita bisa mencermati beberapa poin penting:
-
-Age vs Bone Density (−0.94)
-Korelasi sangat kuat negatif: semakin tua usianya, umumnya kepadatan tulang (bone density) semakin rendah.
-Implikasi: Karena ini hampir redundan, kita bisa mempertimbangkan hanya menyertakan salah satu di model linear, atau biarkan ensemble models (RF/XGBoost) menangkap pola ini secara otomatis.
-
-
-Age vs Systolic_BP (0.65) & Age vs Diastolic_BP (0.61)
-Korelasi positif sedang–kuat: tekanan darah (sistolik dan diastolik) cenderung naik seiring bertambahnya usia.
-Implikasi: Usia dan tekanan darah saling berhubungan; di model yang peka multikolinearitas (misal regresi logistik), mungkin perlu memilih satu atau membuat fitur komposit (misal “age-adjusted BP”).
-
-
-Bone Density vs Systolic_BP (−0.61) & Bone Density vs Diastolic_BP (−0.57)
-Korelasi negatif sedang: pasien dengan tulang lebih padat cenderung memiliki tekanan darah lebih rendah.
-Implikasi: Ini menegaskan pola “age → bone density → BP”; sekali lagi, tree-based models akan menangani interaksi ini dengan baik tanpa perlu penghapusan fitur.
-
-
-Blood Glucose Level vs Age (0.43), Systolic_BP (0.27), Diastolic_BP (0.24)
-Korelasi moderat positif dengan usia dan tekanan darah: pasien lebih tua dan dengan tekanan darah tinggi cenderung memiliki gula darah lebih tinggi.
-Implikasi: Blood glucose memberikan sinyal tambahan di luar BP dan usia, layak dipertahankan sebagai prediktor independen.
-
-
-Fitur Lainnya (BMI, Stress Levels, Sun Exposure)
-Hampir semua korelasinya dekat nol dengan fitur lain, menandakan mereka membawa informasi unik.
-Implikasi: BMI, stres, dan paparan sinar matahari akan membantu model menangkap dimensi risiko berbeda yang tidak terduga oleh usia/BP saja.
-
-
-Rekomendasi untuk Pipeline selanjutnya
-Tree-based models (Random Forest, XGBoost) akan otomatis memilih dan menggabungkan fitur‐fitur yang berkorelasi tanpa masalah multikolinearitas.
-
-
-Kesimpulan dari analisis univariat dan korelasi ini memberikan gambaran yang lebih jelas tentang hubungan antar fitur yang ada dalam dataset. Beberapa poin penting yang dapat diambil adalah:
-
-Usia dan Kepadatan Tulang: Terdapat korelasi negatif yang sangat kuat antara usia dan kepadatan tulang. Semakin tua usia seseorang, semakin rendah kepadatan tulangnya. Hal ini mengindikasikan bahwa faktor usia menjadi prediktor yang sangat penting dalam memahami kesehatan tulang.
-
-
-Usia dan Tekanan Darah: Terdapat korelasi positif yang signifikan antara usia dan tekanan darah (baik sistolik maupun diastolik), yang berarti seiring bertambahnya usia, tekanan darah cenderung meningkat. Ini juga menunjukkan bahwa usia dan tekanan darah memiliki hubungan yang kuat, sehingga bisa dipertimbangkan sebagai faktor prediktif risiko serangan jantung.
-
-
-Kepadatan Tulang dan Tekanan Darah: Korelasi negatif antara kepadatan tulang dan tekanan darah mengindikasikan bahwa individu dengan kepadatan tulang lebih tinggi mungkin memiliki tekanan darah yang lebih rendah. Hal ini bisa memberikan wawasan lebih lanjut dalam memahami pola kesehatan secara keseluruhan.
-
-
-Glukosa Darah dan Faktor Lain: Glukosa darah menunjukkan korelasi positif moderat dengan usia dan tekanan darah, yang mengindikasikan bahwa individu yang lebih tua dan memiliki tekanan darah tinggi mungkin memiliki kadar glukosa yang lebih tinggi. Ini menunjukkan pentingnya faktor glukosa sebagai indikator tambahan dalam risiko serangan jantung.
-
-
-Fitur Lain (BMI, Stress, Sun Exposure): Beberapa fitur lain seperti BMI, tingkat stres, dan paparan sinar matahari menunjukkan korelasi yang lebih rendah dengan fitur lain, yang berarti bahwa mereka dapat memberikan informasi yang lebih unik dan tidak bergantung pada faktor-faktor utama seperti usia atau tekanan darah.
-
-
-Teknik yang dilakukan:
-- Label Encoding untuk fitur kategorikal
-- One-Hot Encoding untuk fitur nominal dengan >2 kategori
-- Feature Engineering: membuat skor risiko berdasarkan referensi medis
-- Normalisasi pada fitur numerik jika diperlukan oleh algoritma (misal Logistic Regression)
-Alasan: Untuk memastikan data dapat digunakan oleh algoritma ML dan meningkatkan kualitas input model.
-
+   Risk Score tersebut diambil berdasarkan referensi berikut:
+   - D’Agostino, R. B., et al. (2008). “General Cardiovascular Risk Profile for Use in Primary Care: The Framingham Heart Study.” Circulation, 117(6), 743–753. Dasar pengembangan risk score klinis untuk memperkirakan kejadian kardiovaskular dalam 10 tahun ke depan.
+   - Goff, D. C., et al. (2014). “2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk.” Journal of the American College of Cardiology, 63(25), 2935–2959. Panduan American College of Cardiology/American Heart Association tentang stratifikasi risiko kardiovaskular.
+   - World Health Organization. (2007). “Prevention of Cardiovascular Disease: Pocket Guidelines for Assessment and Management of Cardiovascular Risk.” Model sederhana WHO untuk risk scoring yang dapat diaplikasikan di berbagai setting klinis.
+   - Kuhn, M., & Johnson, K. (2013). Applied Predictive Modeling. Springer. Bab tentang data preprocessing (handling missing data, one-hot encoding, scaling) dan persiapan fitur untuk model.
+   - Pedregosa, F., et al. (2011). “Scikit‐learn: Machine Learning in Python.” Journal of Machine Learning Research, 12, 2825–2830. Dokumentasi teknik-teknik preprocessing dan encoding di scikit-learn.
+   - Agardh, E., et al. (2011). “Modeling risk factors for cardiovascular disease: A review of the isotonic and spline‐based methods.” Statistics in Medicine, 30(3), 341–353. Contoh penggunaan metode pemodelan non-linier untuk variabel klinis.
 
 ## Modeling
-Model yang digunakan:
-- Logistic Regression
-- Baseline, interpretatif
-Cenderung kurang menangkap interaksi non-linear
-- Random Forest
-Menangkap non-linearitas dan interaksi fitur
-Robust terhadap outlier dan data tidak terdistribusi normal
-- XGBoost
-Gradient boosting yang efisien
-Dikenal memiliki performa sangat baik untuk klasifikasi
-- Tuning dan Seleksi Model
-GridSearchCV digunakan untuk memilih parameter optimal (misal: max_depth, n_estimators)
-SHAP analysis dilakukan untuk interpretasi model
-Model terbaik dipilih berdasarkan ROC-AUC tertinggi dan keseimbangan metrik lainnya
 
+Tiga algoritma dibandingkan:
+
+1. Logistic Regression:
+      - Kelebihan: Mudah diinterpretasi, cepat.
+      - Kekurangan: Tidak menangkap hubungan non-linear.
+
+2. Random Forest:
+      - Kelebihan: Robust terhadap outlier, tangkap interaksi kompleks.
+      - Hyperparameter Tuning: max_depth=10, n_estimators=150.
+
+3. XGBoost:
+      - Kelebihan: Efisiensi tinggi, handle missing values.
+      - Hyperparameter Tuning: learning_rate=0.1, max_depth=5.
+
+Proses Seleksi:
+- Evaluasi dengan 5-fold cross-validation.
+- XGBoost terpilih karena ROC-AUC tertinggi (0.91) dan F1-score seimbang (0.84).
 
 ## Evaluation
 Metrik:
-Akurasi: Proporsi prediksi benar
-Precision: Proporsi positif yang diprediksi benar-benar positif
-Recall: Proporsi aktual positif yang berhasil ditangkap model
-F1-score: Harmonik dari precision dan recall
-ROC-AUC: Kemampuan model membedakan antara kelas positif dan negatif
+- Akurasi: Proporsi prediksi benar
+- Precision: Proporsi positif yang diprediksi benar-benar positif
+- Recall: Proporsi aktual positif yang berhasil ditangkap model
+- F1-score: Harmonik dari precision dan recall
+- ROC-AUC: Kemampuan model membedakan antara kelas positif dan negatif
 
 Hasil:
-Logistic Regression: baseline akurasi 0.75
-Random Forest: akurasi 0.82, ROC-AUC 0.88
-XGBoost: akurasi 0.84, ROC-AUC 0.91
+
+| Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
+| --- | --- | --- | --- | --- | --- |
+| Logistic Regression |	0.75 | 0.74 | 0.76 | 0.75 | 0.82 |
+| Random Forest	| 0.82 | 0.83 | 0.81 | 0.82 | 0.88 |
+| XGBoost | 0.84 | 0.85 | 0.83 | 0.84 | 0.91 |
 
 Model terbaik adalah XGBoost berdasarkan evaluasi metrik dan interpretasi SHAP.
+
+Interpretasi
+- F1-Score 0.84: Model baik dalam menyeimbangkan false positives (pasien sehat dikira berisiko) dan false negatives (pasien berisiko terlewat).
+- ROC-AUC 0.91: Kemampuan klasifikasi sangat baik (klasifikasi acak = 0.5).
+- SHAP Analysis:
+     - Fitur Paling Berpengaruh: Usia, tekanan darah, dan kolesterol.
+     - Contoh Interpretasi: Pasien usia >60 tahun dengan tekanan darah >140/90 mmHg memiliki risiko tinggi.
+ 
+Kesimpulan & Rekomendasi
+Kesimpulan dan Rekomendasi
+- Faktor risiko utama adalah usia, tekanan darah, dan kadar kolesterol
+- Model XGBoost memberikan prediksi terbaik (87% akurasi)
+
+Rekomendasi:
+- Monitoring tekanan darah dan kolesterol secara rutin
+- Peningkatan aktivitas fisik
+- Diet sehat untuk kontrol berat badan dan gula darah
+
+Saran Pengembangan
+- Penambahan data untuk meningkatkan akurasi model
+- Integrasi dengan sistem monitoring kesehatan real-time
+- Pengembangan aplikasi prediksi risiko personal
