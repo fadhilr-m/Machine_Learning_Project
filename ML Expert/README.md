@@ -31,7 +31,7 @@ Referensi:
 
 - Preprocessing: Menyiapkan data MCU dengan teknik imputasi, encoding, dan feature engineering.
 - Model Development: Membandingkan 3 algoritma (Logistic Regression, Random Forest, XGBoost).
-- Evaluation: Mengevaluasi model dengan metrik klinis (F1-score, ROC-AUC) dan interpretasi SHAP.
+- Evaluation: Mengevaluasi model dengan metrik klinis (F1-score) dan interpretasi SHAP.
 
 ## Solution Statement
 
@@ -75,11 +75,10 @@ Alasan Pemilihan Algoritma:
 
 Solusi 3: Evaluasi Klinis
 
-- Metrik Utama: F1-Score (keseimbangan precision-recall) dan ROC-AUC (kemampuan diskriminasi).
+- Metrik Utama: F1-Score (keseimbangan precision-recall).
 - Kriteria Seleksi Model:
   
   - F1-score > 0.8 (untuk meminimalkan false negatives).
-  - ROC-AUC > 0.9 (klasifikasi sangat baik).
 
 ## Data Understanding
 
@@ -217,10 +216,6 @@ Tiga algoritma dibandingkan:
       - Kelebihan: Efisiensi tinggi, handle missing values.
       - Hyperparameter Tuning: learning_rate=0.1, max_depth=5.
 
-Proses Seleksi:
-- Evaluasi dengan 5-fold cross-validation.
-- XGBoost terpilih karena ROC-AUC tertinggi (0.91) dan F1-score seimbang (0.84).
-
 ## Evaluation
 
 Metrik:
@@ -229,22 +224,21 @@ Metrik:
 - Precision: Proporsi positif yang diprediksi benar-benar positif
 - Recall: Proporsi aktual positif yang berhasil ditangkap model
 - F1-score: Harmonik dari precision dan recall
-- ROC-AUC: Kemampuan model membedakan antara kelas positif dan negatif
 
 Hasil:
 
-| Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
+| Model | Accuracy | Precision | Recall | F1-Score |
 | --- | --- | --- | --- | --- | --- |
-| Logistic Regression |	0.75 | 0.74 | 0.76 | 0.75 | 0.82 |
-| Random Forest	| 0.82 | 0.83 | 0.81 | 0.82 | 0.88 |
-| XGBoost | 0.84 | 0.85 | 0.83 | 0.84 | 0.91 |
-
+| Logistic Regression |	0.65 | 0.58 | 0.54 | 0.55 |
+| Random Forest	| 0.88 | 0.91 | 0.77 | 0.81 |
+| XGBoost | 0.95 | 0.94 | 0.90 | 0.92 |
+| Neural Network | 0.97 | 0.94 | 0.95 | 0.94 |
+             
 Model terbaik adalah XGBoost berdasarkan evaluasi metrik dan interpretasi SHAP.
 
 Interpretasi
 
 - F1-Score 0.84: Model baik dalam menyeimbangkan false positives (pasien sehat dikira berisiko) dan false negatives (pasien berisiko terlewat).
-- ROC-AUC 0.91: Kemampuan klasifikasi sangat baik (klasifikasi acak = 0.5).
 - SHAP Analysis:
   
      - Fitur Paling Berpengaruh: Usia, tekanan darah, dan kolesterol.
