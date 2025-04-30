@@ -228,7 +228,7 @@ Metrik:
 Hasil:
 
 | Model | Accuracy | Precision | Recall | F1-Score |
-| --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | Logistic Regression |	0.65 | 0.58 | 0.54 | 0.55 |
 | Random Forest	| 0.88 | 0.91 | 0.77 | 0.81 |
 | XGBoost | 0.95 | 0.94 | 0.90 | 0.92 |
