@@ -8,11 +8,13 @@ Dalam era data-driven saat ini, analisis data kesehatan secara cerdas menjadi ku
 Mengapa dan Bagaimana Masalah Ini Diselesaikan?
 
 Diagnosis tradisional memerlukan waktu lama dan biaya tinggi. Machine Learning (ML) dapat:
+
 - Mempercepat skrining risiko berdasarkan data historis pasien.
 - Mengurangi beban tenaga medis dengan prediksi otomatis.
 - Meningkatkan akurasi dengan mempelajari pola kompleks dalam data.
 
 Referensi:
+
 - World Health Organization. (2023). Cardiovascular Diseases (CVDs). [Online]. Tersedia: https://www.who.int
 - Rajpurkar, P. et al. (2019). Deep Learning for Cardiovascular Risk Prediction. Nature Medicine. DOI:10.1038/s41591-019-0647-4
 
@@ -34,36 +36,50 @@ Referensi:
 ## Solution Statement
 
 Solusi 1: Data Preparation
-         - Handling Missing Values:
-              - Numerik: Median Imputation (robust terhadap outlier).
-              - Kategorikal: Mode Imputation.
-         - Feature Engineering:
-               Membuat Risk Score berdasarkan pedoman medis (misal: BMI > 30 = +1 poin risiko).
-         - Encoding:
-               One-Hot Encoding untuk fitur kategorikal (contoh: Smoking Status).
+
+  - Handling Missing Values:
+       
+    - Numerik: Median Imputation (robust terhadap outlier).
+    - Kategorikal: Mode Imputation.
+      
+  - Feature Engineering:
+    
+    Membuat Risk Score berdasarkan pedoman medis (misal: BMI > 30 = +1 poin risiko).
+  
+  - Encoding:
+    
+    One-Hot Encoding untuk fitur kategorikal (contoh: Smoking Status).
 
 Alasan:
+
 - Median Imputation menjaga distribusi data numerik.
 - Risk Score menambahkan domain knowledge ke model.
 
 Solusi 2: Pemodelan & Optimasi
-         - Baseline Model: Logistic Regression (interpretatif).
-         - Comparative Models:
-               - Random Forest: Menangani non-linearitas dan interaksi fitur.
-               - XGBoost: Optimasi performa dengan gradient boosting.
-         - Hyperparameter Tuning:
-               - GridSearchCV untuk Random Forest (max_depth, n_estimators).
-               - Bayesian Optimization untuk XGBoost (efisiensi komputasi).
+
+- Baseline Model: Logistic Regression (interpretatif).
+- Comparative Models:
+  
+  - Random Forest: Menangani non-linearitas dan interaksi fitur.
+  - XGBoost: Optimasi performa dengan gradient boosting.
+    
+- Hyperparameter Tuning:
+  
+  - GridSearchCV untuk Random Forest (max_depth, n_estimators).
+  - Bayesian Optimization untuk XGBoost (efisiensi komputasi).
 
 Alasan Pemilihan Algoritma:
+
 - XGBoost dipilih karena kemampuan handling missing values dan performa tinggi.
 - Random Forest sebagai pembanding karena robust terhadap overfitting.
 
 Solusi 3: Evaluasi Klinis
-         - Metrik Utama: F1-Score (keseimbangan precision-recall) dan ROC-AUC (kemampuan diskriminasi).
-         - Kriteria Seleksi Model:
-               - F1-score > 0.8 (untuk meminimalkan false negatives).
-               - ROC-AUC > 0.9 (klasifikasi sangat baik).
+
+- Metrik Utama: F1-Score (keseimbangan precision-recall) dan ROC-AUC (kemampuan diskriminasi).
+- Kriteria Seleksi Model:
+  
+  - F1-score > 0.8 (untuk meminimalkan false negatives).
+  - ROC-AUC > 0.9 (klasifikasi sangat baik).
 
 ## Data Understanding
 
@@ -102,24 +118,28 @@ Fiturnya adalah :
 | Age (years) | usia individu dalam tahun |
 
 
-Analisis Data Numerik
+### Analisis Data Numerik
 
 Fitur-fitur numerik seperti usia (Age), tekanan darah (Blood Pressure), dan kadar glukosa (Blood Glucose Level) menunjukkan distribusi yang bervariasi:
+
 - Usia: Distribusi merata dari 18 hingga 90 tahun, memungkinkan model belajar pola risiko di berbagai kelompok umur.
 - Tekanan Darah: Sebagian besar pasien berada dalam kisaran normal, tetapi terdapat ekor kanan yang menunjukkan kelompok dengan hipertensi (risiko tinggi).
 - Kadar Glukosa: Sebagian besar dalam rentang normal, tetapi beberapa outlier menunjukkan pasien dengan potensi diabetes.
 
 Insight: Fitur-fitur ini memiliki korelasi signifikan dengan risiko jantung, terutama usia dan tekanan darah, yang sering menjadi prediktor utama dalam studi medis.
 
-Analisis Data Kategorikal
+### Analisis Data Kategorikal
 
 Fitur seperti kebiasaan merokok (Smoking Status), aktivitas fisik (Physical Activity Level), dan riwayat keluarga (Family History) memberikan konteks penting:
+
 - Perokok Aktif/Mantan: 45% sampel memiliki riwayat merokok, yang secara klinis terkait dengan peningkatan risiko jantung.
 - Aktivitas Fisik Rendah: 30% pasien termasuk kategori kurang aktif, yang dapat berkontribusi pada obesitas dan hipertensi.
 - Riwayat Keluarga: Sekitar 20% memiliki keluarga dengan penyakit jantung, mengindikasikan faktor genetik.
 
 Insight: Fitur-fitur ini membantu model memahami gaya hidup dan faktor risiko non-fisiologis.
 Analisis Korelasi Antar Fitur
+
+### Heatmap
 
 Heatmap korelasi mengungkap hubungan menarik:
 
@@ -134,21 +154,26 @@ Pada tahap ini dilakukan serangkaian proses untuk mempersiapkan data sebelum dig
 Data Preparation
 
 1. Pembersihan Data:
+   
    - Pemisahan Kolom Tekanan Darah: Kolom "Blood Pressure (s/d)" dipisah menjadi "Systolic_BP" dan "Diastolic_BP"
    - Penanganan Missing Values: Nilai kosong diisi dengan "None" untuk kolom:
+  
         - Education Level
         - Alcohol Consumption
         - Chronic Diseases
         - Medication Use
         - Family History
+          
    - Kolom yang tidak relevan seperti "Vision Sharpness", "Hearing Ability", "Pollution Exposure", "Income Level", "Education Level" dihapus
 
-2. Transformasi Data:
+3. Transformasi Data:
+   
    - One-Hot Encoding untuk fitur kategorikal seperti Diet dan Smoking Status.
    - Standarisasi fitur numerik (misal: Blood Pressure) untuk algoritma berbasis jarak.
      
-3. Feature Engineering:
+5. Feature Engineering:
    Membuat Risk Score sederhana berdasarkan pedoman klinis, contoh:
+   
       - Usia (>55 tahun = 2 poin, 45-55 = 1 poin)
       - Tekanan darah (≥140/90 = 2 poin, ≥130/85 = 1 poin)
       - Kolesterol (≥240 = 2 poin, ≥200 = 1 poin)
@@ -159,11 +184,13 @@ Data Preparation
       - Riwayat keluarga (2 poin)
         
    Kategori risiko:
+   
       - Rendah: <4
       - Sedang: 4-7
       - Tinggi: ≥8
 
    Risk Score tersebut diambil berdasarkan referensi berikut:
+   
    - D’Agostino, R. B., et al. (2008). “General Cardiovascular Risk Profile for Use in Primary Care: The Framingham Heart Study.” Circulation, 117(6), 743–753. Dasar pengembangan risk score klinis untuk memperkirakan kejadian kardiovaskular dalam 10 tahun ke depan.
    - Goff, D. C., et al. (2014). “2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk.” Journal of the American College of Cardiology, 63(25), 2935–2959. Panduan American College of Cardiology/American Heart Association tentang stratifikasi risiko kardiovaskular.
    - World Health Organization. (2007). “Prevention of Cardiovascular Disease: Pocket Guidelines for Assessment and Management of Cardiovascular Risk.” Model sederhana WHO untuk risk scoring yang dapat diaplikasikan di berbagai setting klinis.
@@ -176,14 +203,17 @@ Data Preparation
 Tiga algoritma dibandingkan:
 
 1. Logistic Regression:
+   
       - Kelebihan: Mudah diinterpretasi, cepat.
       - Kekurangan: Tidak menangkap hubungan non-linear.
 
-2. Random Forest:
+3. Random Forest:
+   
       - Kelebihan: Robust terhadap outlier, tangkap interaksi kompleks.
       - Hyperparameter Tuning: max_depth=10, n_estimators=150.
 
-3. XGBoost:
+5. XGBoost:
+   
       - Kelebihan: Efisiensi tinggi, handle missing values.
       - Hyperparameter Tuning: learning_rate=0.1, max_depth=5.
 
@@ -192,7 +222,9 @@ Proses Seleksi:
 - XGBoost terpilih karena ROC-AUC tertinggi (0.91) dan F1-score seimbang (0.84).
 
 ## Evaluation
+
 Metrik:
+
 - Akurasi: Proporsi prediksi benar
 - Precision: Proporsi positif yang diprediksi benar-benar positif
 - Recall: Proporsi aktual positif yang berhasil ditangkap model
@@ -210,23 +242,27 @@ Hasil:
 Model terbaik adalah XGBoost berdasarkan evaluasi metrik dan interpretasi SHAP.
 
 Interpretasi
+
 - F1-Score 0.84: Model baik dalam menyeimbangkan false positives (pasien sehat dikira berisiko) dan false negatives (pasien berisiko terlewat).
 - ROC-AUC 0.91: Kemampuan klasifikasi sangat baik (klasifikasi acak = 0.5).
 - SHAP Analysis:
+  
      - Fitur Paling Berpengaruh: Usia, tekanan darah, dan kolesterol.
      - Contoh Interpretasi: Pasien usia >60 tahun dengan tekanan darah >140/90 mmHg memiliki risiko tinggi.
  
-Kesimpulan & Rekomendasi
 Kesimpulan dan Rekomendasi
+
 - Faktor risiko utama adalah usia, tekanan darah, dan kadar kolesterol
 - Model XGBoost memberikan prediksi terbaik (87% akurasi)
 
 Rekomendasi:
+
 - Monitoring tekanan darah dan kolesterol secara rutin
 - Peningkatan aktivitas fisik
 - Diet sehat untuk kontrol berat badan dan gula darah
 
 Saran Pengembangan
+
 - Penambahan data untuk meningkatkan akurasi model
 - Integrasi dengan sistem monitoring kesehatan real-time
 - Pengembangan aplikasi prediksi risiko personal
