@@ -259,7 +259,7 @@ Metrik:
 | Logistic Regression |	0.85 | 0.83 | 0.83 | 0.83 |
 | Random Forest	| 0.88 | 0.91 | 0.77 | 0.81 |
 | XGBoost | 0.95 | 0.94 | 0.90 | 0.92 |
-| Neural Network | 0.97 | 0.95 | 0.96 | 0.95 |
+| Neural Network | 0.97 | 0.95 | 0.95 | 0.95 |
 
 1. Accuracy
 
@@ -281,7 +281,7 @@ Metrik:
     - Logistic Regression (0.83): Hanya mendeteksi 83% pasien berisiko → 17% “terlewat” (false negatives)
     - Random Forest (0.77): Menangkap 77% risiko → lebih buruk dan masih ada 23% yang lolos
     - XGBoost (0.90): Deteksi 90% pasien berisiko → kesalahan false negatives jauh berkurang
-    - Neural Network (0.96): Deteksi 95% risiko → paling sedikit pasien berisiko yang terlewat
+    - Neural Network (0.95): Deteksi 95% risiko → paling sedikit pasien berisiko yang terlewat
 
     NN dan XGB unggul karena meminimalkan risiko terlewat.
 
@@ -297,7 +297,7 @@ Metrik:
 
 Kesimpulan
 
-  - Neural Network: Kombinasi accuracy tertinggi (0.97), precision tinggi (0.94), recall unggul (0.95), dan F1-Score terbaik (0.94) menjadikannya model paling andal untuk memprediksi risiko serangan jantung—terutama bila tujuan utama adalah menangkap sebanyak mungkin pasien berisiko tanpa terlalu banyak alarm palsu.
+  - Neural Network: Kombinasi accuracy tertinggi (0.97), precision tinggi (0.95), recall unggul (0.95), dan F1-Score terbaik (0.95) menjadikannya model paling andal untuk memprediksi risiko serangan jantung—terutama bila tujuan utama adalah menangkap sebanyak mungkin pasien berisiko tanpa terlalu banyak alarm palsu.
   - XGBoost: Nyaris setara NN (accuracy 0.95, F1-Score 0.92) dan juga pilihan sangat baik jika sumber daya komputasi atau interpretabilitas sedikit lebih dibutuhkan.
   - Random Forest: Precision sangat tinggi (0.91), cocok bila false positives harus diminimalkan, tetapi recall-nya (0.77) masih di bawah XGBoost/NN.
   - Logistic Regression: Cocok untuk baseline sederhana dan analisis cepat, namun kinerjanya cukup baik di semua metrik—kurang cocok untuk prediksi risiko medis yang serius.
