@@ -44,23 +44,11 @@ Solusi 1: Data Preparation
     
     One-Hot Encoding untuk fitur kategorikal (contoh: Smoking Status).
 
-Solusi 2: Pemodelan & Optimasi
+Solusi 2: Pemodelan
 
 - Baseline Model: Logistic Regression (interpretatif).
-- Comparative Models:
+- Comparative Models antara Random Forest, XGBoost, dan Neural Network
   
-  - Random Forest: Menangani non-linearitas dan interaksi fitur.
-  - XGBoost: Optimasi performa dengan gradient boosting.
-    
-- Hyperparameter Tuning:
-  
-  - GridSearchCV untuk Random Forest (max_depth, n_estimators).
-  - Bayesian Optimization untuk XGBoost (efisiensi komputasi).
-
-Alasan Pemilihan Algoritma:
-
-- XGBoost dipilih karena kemampuan handling missing values dan performa tinggi.
-- Random Forest sebagai pembanding karena robust terhadap overfitting.
 
 Solusi 3: Evaluasi Klinis
 
@@ -329,11 +317,10 @@ Saran Pengembangan
   
 Referensi:
 
-- World Health Organization. (2023). Cardiovascular Diseases (CVDs). [Online]. Tersedia: https://www.who.int
-- Rajpurkar, P. et al. (2019). Deep Learning for Cardiovascular Risk Prediction. Nature Medicine. DOI:10.1038/s41591-019-0647-4
-- D’Agostino, R. B., et al. (2008). “General Cardiovascular Risk Profile for Use in Primary Care: The Framingham Heart Study.” Circulation, 117(6), 743–753. Dasar pengembangan risk score klinis untuk memperkirakan kejadian kardiovaskular dalam 10 tahun ke depan.
-- Goff, D. C., et al. (2014). “2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk.” Journal of the American College of Cardiology, 63(25), 2935–2959. Panduan American College of Cardiology/American Heart Association tentang stratifikasi risiko kardiovaskular.
-- World Health Organization. (2007). “Prevention of Cardiovascular Disease: Pocket Guidelines for Assessment and Management of Cardiovascular Risk.” Model sederhana WHO untuk risk scoring yang dapat diaplikasikan di berbagai setting klinis.
-- Kuhn, M., & Johnson, K. (2013). Applied Predictive Modeling. Springer. Bab tentang data preprocessing (handling missing data, one-hot encoding, scaling) dan persiapan fitur untuk model.
-- Pedregosa, F., et al. (2011). “Scikit‐learn: Machine Learning in Python.” Journal of Machine Learning Research, 12, 2825–2830. Dokumentasi teknik-teknik preprocessing dan encoding di scikit-learn.
-- Agardh, E., et al. (2011). “Modeling risk factors for cardiovascular disease: A review of the isotonic and spline‐based methods.” Statistics in Medicine, 30(3), 341–353. Contoh penggunaan metode pemodelan non-linier untuk variabel klinis.
+- Rajpurkar, P., Irvin, J., Ball, (2019). Deep learning for cardiovascular risk prediction. Nature Medicine, 25(1), 67–74. https://doi.org/10.1038/s41591-019-0647-4
+- D’Agostino, R. B., Vasan, R. S., Pencina, M. J.(2008). General cardiovascular risk profile for use in primary care: The Framingham Heart Study. Circulation, 117(6), 743–753. https://doi.org/10.1161/CIRCULATIONAHA.107.699579
+- Goff, D. C., Lloyd-Jones, D. M., Bennett, G.(2014). 2013 ACC/AHA guideline on the assessment of cardiovascular risk. Journal of the American College of Cardiology, 63(25), 2935–2959. https://doi.org/10.1016/j.jacc.2013.11.005
+- World Health Organization. (2007). Prevention of cardiovascular disease: Pocket guidelines for assessment and management of cardiovascular risk. Geneva: WHO Press.
+- Kuhn, M., & Johnson, K. (2013). Applied predictive modeling. New York: Springer. https://doi.org/10.1007/978-1-4614-6849-3
+- Pedregosa, F., Varoquaux, G., Gramfort, A.(2011). Scikit-learn: Machine learning in Python. Journal of Machine Learning Research, 12, 2825–2830.
+- Agardh, E., Ahlbom, A., Andersson, T.(2011). Modeling risk factors for cardiovascular disease: A review of the isotonic and spline-based methods. Statistics in Medicine, 30(3), 341–353. https://doi.org/10.1002/sim.4110
