@@ -256,41 +256,41 @@ Metrik:
 
 | Model | Accuracy | Precision | Recall | F1-Score |
 | --- | --- | --- | --- | --- |
-| Logistic Regression |	0.65 | 0.58 | 0.54 | 0.55 |
+| Logistic Regression |	0.85 | 0.83 | 0.83 | 0.83 |
 | Random Forest	| 0.88 | 0.91 | 0.77 | 0.81 |
 | XGBoost | 0.95 | 0.94 | 0.90 | 0.92 |
-| Neural Network | 0.97 | 0.94 | 0.95 | 0.94 |
+| Neural Network | 0.97 | 0.95 | 0.96 | 0.95 |
 
 1. Accuracy
 
-    - Logistic Regression (0.65): Hanya 65% prediksi total yang benar, menunjukkan model ini kurang mampu menangkap pola risiko kompleks
-    - Random Forest (0.88): 88% prediksi benar, lonjakan besar dari LR berkat kemampuannya menangani non-linieritas
+    - Logistic Regression (0.85): 85% prediksi total yang benar, menunjukkan model ini mampu menangkap pola risiko kompleks
+    - Random Forest (0.88): 88% prediksi benar, tidak berbeda jauh dari Logreg dengan kemampuannya menangani non-linieritas
     - XGBoost (0.95): 95% benar—menunjukkan boostrap gradient sangat efektif
     - Neural Network (0.97): 97% benar, nilai tertinggi, model “menghafal” pola dengan sangat baik
 
 2. Precision
 
-    - Logistic Regression (0.58): Dari pasien yang diprediksi “berisiko”, hanya 58% benar-benar berisiko → banyak false positives
+    - Logistic Regression (0.83): Dari pasien yang diprediksi “berisiko”, 83% benar-benar berisiko → banyak false positives
     - Random Forest (0.91): 91% prediksi positif tepat → false positives sangat sedikit
-    - XGBoost (0.94) & Neural Network (0.94): Keduanya sangat andal dalam memprediksi risk-positives dengan kesalahan minimal
+    - XGBoost (0.94) & Neural Network (0.95): Keduanya sangat andal dalam memprediksi risk-positives dengan kesalahan minimal
 
     Precision tinggi (RF, XGB, NN) berarti hampir tidak ada pasien sehat yang “dinyatakan berisiko” secara keliru.
 
 3. Recall
 
-    - Logistic Regression (0.54): Hanya mendeteksi 54% pasien berisiko → 46% “terlewat” (false negatives)
-    - Random Forest (0.77): Menangkap 77% risiko → lebih baik tapi masih ada 23% yang lolos
+    - Logistic Regression (0.83): Hanya mendeteksi 83% pasien berisiko → 17% “terlewat” (false negatives)
+    - Random Forest (0.77): Menangkap 77% risiko → lebih buruk dan masih ada 23% yang lolos
     - XGBoost (0.90): Deteksi 90% pasien berisiko → kesalahan false negatives jauh berkurang
-    - Neural Network (0.95): Deteksi 95% risiko → paling sedikit pasien berisiko yang terlewat
+    - Neural Network (0.96): Deteksi 95% risiko → paling sedikit pasien berisiko yang terlewat
 
     NN dan XGB unggul karena meminimalkan risiko terlewat.
 
 4. F1-Score
 
-    - Logistic Regression (0.55): Harmonik precision & recall rendah → performa tidak seimbang
-    - Random Forest (0.81): Keseimbangan cukup, didorong precision tinggi
+    - Logistic Regression (0.83): Harmonik precision & recall rendah → performa seimbang
+    - Random Forest (0.81): Keseimbangan cukup, didorong precision tinggi namun masih dibawah Logreg
     - XGBoost (0.92): Balance precision & recall sangat baik
-    - Neural Network (0.94): Balance terbaik, menegaskan keunggulan komprehensif
+    - Neural Network (0.95): Balance terbaik, menegaskan keunggulan komprehensif
 
     F1-Score tinggi (NN, XGB) menunjukkan model tidak hanya akurat, tetapi juga seimbang antara menghindari false positives dan false negatives.
 
@@ -300,7 +300,7 @@ Kesimpulan
   - Neural Network: Kombinasi accuracy tertinggi (0.97), precision tinggi (0.94), recall unggul (0.95), dan F1-Score terbaik (0.94) menjadikannya model paling andal untuk memprediksi risiko serangan jantung—terutama bila tujuan utama adalah menangkap sebanyak mungkin pasien berisiko tanpa terlalu banyak alarm palsu.
   - XGBoost: Nyaris setara NN (accuracy 0.95, F1-Score 0.92) dan juga pilihan sangat baik jika sumber daya komputasi atau interpretabilitas sedikit lebih dibutuhkan.
   - Random Forest: Precision sangat tinggi (0.91), cocok bila false positives harus diminimalkan, tetapi recall-nya (0.77) masih di bawah XGBoost/NN.
-  - Logistic Regression: Cocok untuk baseline sederhana dan analisis cepat, namun kinerjanya paling rendah di semua metrik—kurang cocok untuk prediksi risiko medis yang serius.
+  - Logistic Regression: Cocok untuk baseline sederhana dan analisis cepat, namun kinerjanya cukup baik di semua metrik—kurang cocok untuk prediksi risiko medis yang serius.
 
 
 Saran Pengembangan
