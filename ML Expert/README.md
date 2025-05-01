@@ -13,12 +13,6 @@ Diagnosis tradisional memerlukan waktu lama dan biaya tinggi. Machine Learning (
 - Mengurangi beban tenaga medis dengan prediksi otomatis.
 - Meningkatkan akurasi dengan mempelajari pola kompleks dalam data.
 
-Referensi:
-
-- World Health Organization. (2023). Cardiovascular Diseases (CVDs). [Online]. Tersedia: https://www.who.int
-- Rajpurkar, P. et al. (2019). Deep Learning for Cardiovascular Risk Prediction. Nature Medicine. DOI:10.1038/s41591-019-0647-4
-
-  
 ## Business Understanding
 
 ### Problem Statement
@@ -49,11 +43,6 @@ Solusi 1: Data Preparation
   - Encoding:
     
     One-Hot Encoding untuk fitur kategorikal (contoh: Smoking Status).
-
-Alasan:
-
-- Median Imputation menjaga distribusi data numerik.
-- Risk Score menambahkan domain knowledge ke model.
 
 Solusi 2: Pemodelan & Optimasi
 
@@ -119,13 +108,10 @@ Fiturnya adalah :
 
 ### Analisis Data Numerik
 
-Fitur-fitur numerik seperti usia (Age), tekanan darah (Blood Pressure), dan kadar glukosa (Blood Glucose Level) menunjukkan distribusi yang bervariasi:
-
-- Usia: Distribusi merata dari 18 hingga 90 tahun, memungkinkan model belajar pola risiko di berbagai kelompok umur.
-- Tekanan Darah: Sebagian besar pasien berada dalam kisaran normal, tetapi terdapat ekor kanan yang menunjukkan kelompok dengan hipertensi (risiko tinggi).
-- Kadar Glukosa: Sebagian besar dalam rentang normal, tetapi beberapa outlier menunjukkan pasien dengan potensi diabetes.
-
-Insight: Fitur-fitur ini memiliki korelasi signifikan dengan risiko jantung, terutama usia dan tekanan darah, yang sering menjadi prediktor utama dalam studi medis.
+- Sebagian besar fitur numerik memiliki distribusi mendekati normal, cocok untuk model klasik seperti logistic regression
+- Fitur seperti Age, Stress Levels, dan Sun Exposure menunjukkan distribusi yang tidak normal (flat/uniform), yang artinya hubungan terhadap target mungkin tidak linier — model non-linier seperti tree-based (Random Forest, XGBoost) bisa lebih baik.
+- Tidak ada outlier mencolok, semua fitur terdistribusi wajar — ini memudahkan training model tanpa transformasi agresif.
+- Multikolinearitas kemungkinan rendah, mengingat distribusi yang cukup berbeda satu sama lain.
 
 ### Analisis Data Kategorikal
 
@@ -144,7 +130,8 @@ Heatmap korelasi mengungkap hubungan menarik:
 
 - Usia vs. Tekanan Darah: Korelasi positif (+0.65), artinya semakin tua, tekanan darah cenderung lebih tinggi.
 - Usia vs. Kepadatan Tulang: Korelasi negatif kuat (-0.94), karena penuaan alami mengurangi kepadatan tulang.
-- Kolesterol vs. Glukosa: Korelasi moderat (+0.43), menunjukkan pasien dengan kolesterol tinggi sering memiliki kadar gula tinggi pula.
+- Usia vs. Glukosa: Korelasi moderat (+0.43), menunjukkan pasien dengan usia lanjut sering memiliki kadar gula tinggi pula.
+- Usia vs. Kolesterol: Korelasi moderat (+0.43), menunjukkan pasien dengan usia lanjut sering memiliki kadar gula tinggi pula.
 
     
 ## Data Preparation
@@ -188,44 +175,96 @@ Data Preparation
       - Sedang: 4-7
       - Tinggi: ≥8
 
-   Risk Score tersebut diambil berdasarkan referensi berikut:
+   Risk Score tersebut diambil berdasarkan referensi jurnal
    
-   - D’Agostino, R. B., et al. (2008). “General Cardiovascular Risk Profile for Use in Primary Care: The Framingham Heart Study.” Circulation, 117(6), 743–753. Dasar pengembangan risk score klinis untuk memperkirakan kejadian kardiovaskular dalam 10 tahun ke depan.
-   - Goff, D. C., et al. (2014). “2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk.” Journal of the American College of Cardiology, 63(25), 2935–2959. Panduan American College of Cardiology/American Heart Association tentang stratifikasi risiko kardiovaskular.
-   - World Health Organization. (2007). “Prevention of Cardiovascular Disease: Pocket Guidelines for Assessment and Management of Cardiovascular Risk.” Model sederhana WHO untuk risk scoring yang dapat diaplikasikan di berbagai setting klinis.
-   - Kuhn, M., & Johnson, K. (2013). Applied Predictive Modeling. Springer. Bab tentang data preprocessing (handling missing data, one-hot encoding, scaling) dan persiapan fitur untuk model.
-   - Pedregosa, F., et al. (2011). “Scikit‐learn: Machine Learning in Python.” Journal of Machine Learning Research, 12, 2825–2830. Dokumentasi teknik-teknik preprocessing dan encoding di scikit-learn.
-   - Agardh, E., et al. (2011). “Modeling risk factors for cardiovascular disease: A review of the isotonic and spline‐based methods.” Statistics in Medicine, 30(3), 341–353. Contoh penggunaan metode pemodelan non-linier untuk variabel klinis.
 
 ## Modeling
 
-Tiga algoritma dibandingkan:
-
 1. Logistic Regression:
-   
-      - Kelebihan: Mudah diinterpretasi, cepat.
-      - Kekurangan: Tidak menangkap hubungan non-linear.
 
-3. Random Forest:
-   
-      - Kelebihan: Robust terhadap outlier, tangkap interaksi kompleks.
-      - Hyperparameter Tuning: max_depth=10, n_estimators=150.
+  - Logistic Regression adalah model paling dasar dan paling mudah dipahami. Meskipun mungkin tidak memiliki performa terbaik, model ini sangat baik untuk baseline—menilai apakah model yang lebih kompleks dapat memberikan peningkatan yang signifikan dalam kinerja.
+  - Logistic Regression bekerja baik ketika hubungan antar fitur bersifat linear, yang mungkin relevan untuk beberapa kasus medis sederhana di mana risiko didasarkan pada hubungan yang jelas antara fitur dan hasil.
+  - Model ini sering digunakan dalam aplikasi dunia nyata di mana kecepatan interpretasi penting.
 
-5. XGBoost:
-   
-      - Kelebihan: Efisiensi tinggi, handle missing values.
-      - Hyperparameter Tuning: learning_rate=0.1, max_depth=5.
+2. Random Forest:
+
+  - Random Forest adalah model ensemble yang dapat menangani hubungan non-linear dan beragam jenis data. Model ini sangat baik dalam mengurangi overfitting, terutama saat berhadapan dengan data yang kompleks atau berisik.
+  - Meskipun lebih sulit dipahami daripada Logistic Regression, RF memberikan hasil yang lebih stabil dan dapat dijelaskan sebagian melalui fitur penting yang diidentifikasi (misalnya, melalui feature importance).
+  - Random Forest sering kali memberikan hasil yang sangat baik di berbagai tugas klasifikasi dan regresi tanpa memerlukan banyak pengaturan atau tunning hyperparameter.
+
+3. XGBoost:
+
+  - XGBoost adalah model ensemble yang berbasis pada gradient boosting dan sangat terkenal karena kemampuannya untuk memberikan hasil yang sangat akurat dalam waktu relatif singkat. Model ini bekerja baik untuk menangani data yang imbalanced, seperti dalam prediksi risiko medis.
+  - XGBoost unggul dalam menangani data dengan hubungan non-linear yang kompleks. Dengan berbagai teknik untuk menangani overfitting (seperti regularisasi), XGBoost sering kali menghasilkan model dengan performansi terbaik di kompetisi data science.
+  - Keunggulannya adalah kemampuan tuning hyperparameter yang sangat baik, memungkinkan model ini untuk beradaptasi dengan baik pada dataset yang beragam
+
+4. Neural Network
+
+  - Neural Network sangat baik dalam mempelajari pola yang sangat kompleks di data besar. Model ini sangat berguna ketika hubungan antara fitur dan label tidak jelas atau linear.
+  - Neural Networks dapat memberikan akurasi yang lebih baik, terutama ketika data memiliki banyak fitur atau sangat rumit. Meskipun kompleks dan memerlukan lebih banyak data, NN dapat memberikan hasil yang luar biasa di dataset besar dan variatif.
+  - Neural Networks mampu bekerja dengan baik pada data yang tidak diolah atau tanpa banyak fitur rekayasa, berkat kemampuan mereka untuk mempelajari representasi yang baik dari data.
+
+
+  Pemilihan Logistic Regression, Random Forest, XGBoost, dan Neural Network didasarkan pada kombinasi faktor-faktor berikut:
+
+  - Sederhana tapi efektif (LR), cocok untuk baseline.
+  - Tahan terhadap overfitting dan bisa mengelola data besar (RF, XGBoost, NN).
+  - Kemampuan menangani data yang kompleks dan hubungan non-linear (XGBoost, NN).
+  - Daya prediksi yang kuat dan akurasi tinggi, terutama untuk aplikasi kesehatan.
+
+  Keempat model ini adalah representasi dari teknik yang beragam dalam pembelajaran mesin yang sudah terbukti efektif di berbagai aplikasi klasifikasi.
+
+
 
 ## Evaluation
 
 Metrik:
 
-- Akurasi: Proporsi prediksi benar
-- Precision: Proporsi positif yang diprediksi benar-benar positif
-- Recall: Proporsi aktual positif yang berhasil ditangkap model
-- F1-score: Harmonik dari precision dan recall
+1. Accuracy
 
-Hasil:
+    Accuracy adalah proporsi keseluruhan prediksi yang benar—baik positif maupun negatif. Metrik ini berguna saat kelas positif/negatif seimbang. Namun bisa menyesatkan bila data sangat tidak seimbang (misal: 99% negatif, model selalu prediksi negatif → akurasi 99% padahal recall positif = 0).
+
+    Formula:
+
+    ${Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}}​$
+
+    TP (True Positive): jumlah kasus positif yang benar-benar diprediksi positif.
+
+    TN (True Negative): jumlah kasus negatif yang benar-benar diprediksi negatif.
+
+    FP (False Positive): jumlah kasus negatif yang salah diprediksi positif.
+
+    FN (False Negative): jumlah kasus positif yang salah diprediksi negatif.
+
+
+2. Precision
+
+    Dari semua prediksi “positif” (berisiko), seberapa banyak yang benar-benar positif. Tujuannya adalah mengevaluasi keandalan model pada prediksi positif. Jika nilai Precision tinggi maka akan sedikit false positives. Namun jika nilai precision turun jika model banyak “berlebihan” menandai negatif sebagai positif.
+
+    Formula:
+
+    ${Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}$
+
+
+3. Recall (Sensitivity)
+
+    Dari semua kasus positif sebenarnya, seberapa banyak yang berhasil terdeteksi model. Tujuannya adalah mengevaluasi kemampuan model menangkap semua kasus positif. Jika nilai recall tinggi maka akan terjadi sedikit false negatives sehingga meminimalkan pasien berisiko yang tidak terdeteksi
+
+    Formula:
+
+    ${Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}$​
+
+
+4. F1-Score
+
+    F1-Score merupakan rata-rata antara precision dan recall. Lebih sensitif terhadap nilai rendah di salah satu metrik (karena memakai rata-rata harmonik). Hal ini akan berjalan optimal jika membutuhkan keseimbangan antara penghindaran false positives dan false negatives.
+
+    Formula:
+
+    ${F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$
+
+
+### Hasil:
 
 | Model | Accuracy | Precision | Recall | F1-Score |
 | --- | --- | --- | --- | --- |
@@ -233,30 +272,68 @@ Hasil:
 | Random Forest	| 0.88 | 0.91 | 0.77 | 0.81 |
 | XGBoost | 0.95 | 0.94 | 0.90 | 0.92 |
 | Neural Network | 0.97 | 0.94 | 0.95 | 0.94 |
-             
-Model terbaik adalah XGBoost berdasarkan evaluasi metrik dan interpretasi SHAP.
 
-Interpretasi
+1. Accuracy
 
-- F1-Score 0.84: Model baik dalam menyeimbangkan false positives (pasien sehat dikira berisiko) dan false negatives (pasien berisiko terlewat).
-- SHAP Analysis:
-  
-     - Fitur Paling Berpengaruh: Usia, tekanan darah, dan kolesterol.
-     - Contoh Interpretasi: Pasien usia >60 tahun dengan tekanan darah >140/90 mmHg memiliki risiko tinggi.
- 
-Kesimpulan dan Rekomendasi
+    - Logistic Regression (0.65): Hanya 65% prediksi total yang benar, menunjukkan model ini kurang mampu menangkap pola risiko kompleks
+    - Random Forest (0.88): 88% prediksi benar, lonjakan besar dari LR berkat kemampuannya menangani non-linieritas
+    - XGBoost (0.95): 95% benar—menunjukkan boostrap gradient sangat efektif
+    - Neural Network (0.97): 97% benar, nilai tertinggi, model “menghafal” pola dengan sangat baik
 
-- Faktor risiko utama adalah usia, tekanan darah, dan kadar kolesterol
-- Model XGBoost memberikan prediksi terbaik (87% akurasi)
+2. Precision
 
-Rekomendasi:
+    - Logistic Regression (0.58): Dari pasien yang diprediksi “berisiko”, hanya 58% benar-benar berisiko → banyak false positives
+    - Random Forest (0.91): 91% prediksi positif tepat → false positives sangat sedikit
+    - XGBoost (0.94) & Neural Network (0.94): Keduanya sangat andal dalam memprediksi risk-positives dengan kesalahan minimal
 
-- Monitoring tekanan darah dan kolesterol secara rutin
-- Peningkatan aktivitas fisik
-- Diet sehat untuk kontrol berat badan dan gula darah
+    Precision tinggi (RF, XGB, NN) berarti hampir tidak ada pasien sehat yang “dinyatakan berisiko” secara keliru.
+
+3. Recall
+
+    - Logistic Regression (0.54): Hanya mendeteksi 54% pasien berisiko → 46% “terlewat” (false negatives)
+    - Random Forest (0.77): Menangkap 77% risiko → lebih baik tapi masih ada 23% yang lolos
+    - XGBoost (0.90): Deteksi 90% pasien berisiko → kesalahan false negatives jauh berkurang
+    - Neural Network (0.95): Deteksi 95% risiko → paling sedikit pasien berisiko yang terlewat
+
+    NN dan XGB unggul karena meminimalkan risiko terlewat.
+
+4. F1-Score
+
+    - Logistic Regression (0.55): Harmonik precision & recall rendah → performa tidak seimbang
+    - Random Forest (0.81): Keseimbangan cukup, didorong precision tinggi
+    - XGBoost (0.92): Balance precision & recall sangat baik
+    - Neural Network (0.94): Balance terbaik, menegaskan keunggulan komprehensif
+
+    F1-Score tinggi (NN, XGB) menunjukkan model tidak hanya akurat, tetapi juga seimbang antara menghindari false positives dan false negatives.
+
+
+Kesimpulan
+
+  - Neural Network: Kombinasi accuracy tertinggi (0.97), precision tinggi (0.94), recall unggul (0.95), dan F1-Score terbaik (0.94) menjadikannya model paling andal untuk memprediksi risiko serangan jantung—terutama bila tujuan utama adalah menangkap sebanyak mungkin pasien berisiko tanpa terlalu banyak alarm palsu.
+  - XGBoost: Nyaris setara NN (accuracy 0.95, F1-Score 0.92) dan juga pilihan sangat baik jika sumber daya komputasi atau interpretabilitas sedikit lebih dibutuhkan.
+  - Random Forest: Precision sangat tinggi (0.91), cocok bila false positives harus diminimalkan, tetapi recall-nya (0.77) masih di bawah XGBoost/NN.
+  - Logistic Regression: Cocok untuk baseline sederhana dan analisis cepat, namun kinerjanya paling rendah di semua metrik—kurang cocok untuk prediksi risiko medis yang serius.
+
 
 Saran Pengembangan
 
-- Penambahan data untuk meningkatkan akurasi model
-- Integrasi dengan sistem monitoring kesehatan real-time
-- Pengembangan aplikasi prediksi risiko personal
+- Validasi model menggunakan data Medical Check-Up (MCU) riil dari institusi kesehatan untuk meningkatkan akurasi dan relevansi klinis.
+- Deploy model dalam bentuk aplikasi web interaktif agar dapat digunakan oleh pengguna umum atau tenaga medis.
+- Tambahkan fitur gaya hidup seperti aktivitas fisik, pola makan, dan tingkat stres untuk memperkaya konteks prediksi.
+- Gunakan data longitudinal (MCU tahunan) agar model dapat mendeteksi tren kesehatan individu secara lebih akurat.
+- Kustomisasi model berdasarkan usia dan gender untuk meningkatkan presisi dan fairness.
+- Evaluasi model dengan metrik cost-sensitive dan simulasi biaya salah prediksi untuk pengambilan keputusan medis.
+- Libatkan dokter spesialis untuk menguji dan memvalidasi hasil model dalam konteks klinis nyata.
+- Tambahkan fitur rekomendasi preventif otomatis berdasarkan hasil prediksi untuk mendorong tindakan nyata dari pengguna.
+
+  
+Referensi:
+
+- World Health Organization. (2023). Cardiovascular Diseases (CVDs). [Online]. Tersedia: https://www.who.int
+- Rajpurkar, P. et al. (2019). Deep Learning for Cardiovascular Risk Prediction. Nature Medicine. DOI:10.1038/s41591-019-0647-4
+- D’Agostino, R. B., et al. (2008). “General Cardiovascular Risk Profile for Use in Primary Care: The Framingham Heart Study.” Circulation, 117(6), 743–753. Dasar pengembangan risk score klinis untuk memperkirakan kejadian kardiovaskular dalam 10 tahun ke depan.
+- Goff, D. C., et al. (2014). “2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk.” Journal of the American College of Cardiology, 63(25), 2935–2959. Panduan American College of Cardiology/American Heart Association tentang stratifikasi risiko kardiovaskular.
+- World Health Organization. (2007). “Prevention of Cardiovascular Disease: Pocket Guidelines for Assessment and Management of Cardiovascular Risk.” Model sederhana WHO untuk risk scoring yang dapat diaplikasikan di berbagai setting klinis.
+- Kuhn, M., & Johnson, K. (2013). Applied Predictive Modeling. Springer. Bab tentang data preprocessing (handling missing data, one-hot encoding, scaling) dan persiapan fitur untuk model.
+- Pedregosa, F., et al. (2011). “Scikit‐learn: Machine Learning in Python.” Journal of Machine Learning Research, 12, 2825–2830. Dokumentasi teknik-teknik preprocessing dan encoding di scikit-learn.
+- Agardh, E., et al. (2011). “Modeling risk factors for cardiovascular disease: A review of the isotonic and spline‐based methods.” Statistics in Medicine, 30(3), 341–353. Contoh penggunaan metode pemodelan non-linier untuk variabel klinis.
