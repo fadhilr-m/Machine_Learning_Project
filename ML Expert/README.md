@@ -59,7 +59,7 @@ Solusi 3: Evaluasi Klinis
 
 ## Data Understanding
 
-Dataset yang digunakan dalam proyek ini terdiri dari 3.000 sampel hasil Medical Check-Up (MCU) dengan 24 fitur klinis dan demografis, seperti usia, tekanan darah, kadar kolesterol, kebiasaan merokok, dan riwayat penyakit. Data ini bersumber dari Kaggle dan mencakup variabel-variabel kunci yang relevan untuk memprediksi risiko serangan jantung.
+Dataset yang digunakan dalam proyek ini terdiri dari 3.000 sampel hasil Medical Check-Up (MCU) dengan 26 fitur klinis dan demografis, seperti usia, tekanan darah, kadar kolesterol, kebiasaan merokok, dan riwayat penyakit. Data ini bersumber dari Kaggle dan mencakup variabel-variabel kunci yang relevan untuk memprediksi risiko serangan jantung. Berikut link yang dapat diakses
 
 https://www.kaggle.com/datasets/abdullah0a/human-age-prediction-synthetic-dataset/data
 
@@ -129,6 +129,10 @@ Data Preparation
 
 1. Pembersihan Data:
    
+   - Kolom yang tidak relevan seperti "Vision Sharpness", "Hearing Ability", "Pollution Exposure", "Income Level", "Education Level" dihapus
+
+2. Transformasi Data:
+
    - Pemisahan Kolom Tekanan Darah: Kolom "Blood Pressure (s/d)" dipisah menjadi "Systolic_BP" dan "Diastolic_BP"
    - Penanganan Missing Values: Nilai kosong diisi dengan "None" untuk kolom:
   
@@ -137,16 +141,10 @@ Data Preparation
         - Chronic Diseases
         - Medication Use
         - Family History
-          
-   - Kolom yang tidak relevan seperti "Vision Sharpness", "Hearing Ability", "Pollution Exposure", "Income Level", "Education Level" dihapus
-
-3. Transformasi Data:
-   
-   - One-Hot Encoding untuk fitur kategorikal seperti Diet dan Smoking Status.
-   - Standarisasi fitur numerik (misal: Blood Pressure) untuk algoritma berbasis jarak.
      
-5. Feature Engineering:
-   Membuat Risk Score sederhana berdasarkan pedoman klinis, contoh:
+3. Feature Engineering:
+
+  - Membuat Risk Score sederhana berdasarkan pedoman klinis, contoh:
    
       - Usia (>55 tahun = 2 poin, 45-55 = 1 poin)
       - Tekanan darah (≥140/90 = 2 poin, ≥130/85 = 1 poin)
@@ -159,14 +157,20 @@ Data Preparation
         
    Kategori risiko:
    
-      - Rendah: <4
-      - Sedang: 4-7
-      - Tinggi: ≥8
+   - Rendah: <4
+   - Sedang: 4-7
+   - Tinggi: ≥8
+  
+  Risk Score tersebut diambil berdasarkan referensi jurnal
 
-   Risk Score tersebut diambil berdasarkan referensi jurnal
-   
+  - One-Hot Encoding untuk fitur kategorikal seperti Diet dan Smoking Status.
+  - Standarisasi fitur numerik (misal: Blood Pressure) untuk algoritma berbasis jarak.
 
 ## Modeling
+
+- membagi x dan y
+- membagi data train dan validation sebesar 30%
+- melakukan modelling sebagai berikut
 
 1. Logistic Regression:
 
@@ -297,23 +301,15 @@ Metrik:
 
 Kesimpulan
 
-  - Neural Network: Kombinasi accuracy tertinggi (0.97), precision tinggi (0.95), recall unggul (0.95), dan F1-Score terbaik (0.95) menjadikannya model paling andal untuk memprediksi risiko serangan jantung—terutama bila tujuan utama adalah menangkap sebanyak mungkin pasien berisiko tanpa terlalu banyak alarm palsu.
-  - XGBoost: Nyaris setara NN (accuracy 0.95, F1-Score 0.92) dan juga pilihan sangat baik jika sumber daya komputasi atau interpretabilitas sedikit lebih dibutuhkan.
-  - Random Forest: Precision sangat tinggi (0.91), cocok bila false positives harus diminimalkan, tetapi recall-nya (0.77) masih di bawah XGBoost/NN.
-  - Logistic Regression: Cocok untuk baseline sederhana dan analisis cepat, namun kinerjanya cukup baik di semua metrik—kurang cocok untuk prediksi risiko medis yang serius.
+- Model berhasil menangani data heterogen (numerik dan kategorikal) dengan baik. Teknik imputasi dan encoding yang digunakan memastikan data dapat diproses oleh model tanpa menambah bias. Proses ini sangat krusial dalam konteks medis, di mana kualitas data yang digunakan bisa mempengaruhi hasil prediksi secara signifikan. Solusi yang diterapkan memungkinkan model untuk tetap akurat meski data memiliki berbagai tipe dan sumber.
+- Model yang dihasilkan sangat berguna bagi dokter karena dapat meminimalkan false negatives (pasien yang berisiko tapi tidak terdeteksi). Ini sangat penting dalam konteks medis untuk memastikan tindakan preventif dapat dilakukan dengan tepat waktu. Dengan akurasi yang tinggi dan interpretasi yang jelas (melalui metrik seperti precision, recall, dan F1-score), dokter dapat mengandalkan model ini untuk membantu keputusan klinis mereka tanpa terlalu banyak kekhawatiran tentang kesalahan prediksi yang signifikan.
+- Dengan pendekatan yang terstruktur dalam preprocessing, pemodelan, dan evaluasi, model ini mampu memprediksi risiko serangan jantung dengan akurasi dan keseimbangan yang tinggi, sangat berguna untuk pengambilan keputusan medis yang lebih tepat.
+Implementasi machine learning dalam prediksi risiko kesehatan memberikan keunggulan kompetitif pada institusi kesehatan, dengan meningkatkan akurasi prediksi dan menyediakan layanan yang lebih personal dan tepat waktu kepada pasien.
 
 
 Saran Pengembangan
 
-- Validasi model menggunakan data Medical Check-Up (MCU) riil dari institusi kesehatan untuk meningkatkan akurasi dan relevansi klinis.
-- Deploy model dalam bentuk aplikasi web interaktif agar dapat digunakan oleh pengguna umum atau tenaga medis.
-- Tambahkan fitur gaya hidup seperti aktivitas fisik, pola makan, dan tingkat stres untuk memperkaya konteks prediksi.
-- Gunakan data longitudinal (MCU tahunan) agar model dapat mendeteksi tren kesehatan individu secara lebih akurat.
-- Kustomisasi model berdasarkan usia dan gender untuk meningkatkan presisi dan fairness.
-- Evaluasi model dengan metrik cost-sensitive dan simulasi biaya salah prediksi untuk pengambilan keputusan medis.
-- Libatkan dokter spesialis untuk menguji dan memvalidasi hasil model dalam konteks klinis nyata.
-- Tambahkan fitur rekomendasi preventif otomatis berdasarkan hasil prediksi untuk mendorong tindakan nyata dari pengguna.
-
+Mengingat hasil yang sangat baik dari model Neural Network dan XGBoost, langkah berikutnya adalah validasi model dengan data riil dan implementasi model dalam bentuk aplikasi interaktif untuk dokter dan pasien. Ini akan mengoptimalkan penggunaan model dalam praktik medis yang sesungguhnya.
   
 Referensi:
 
