@@ -25,7 +25,7 @@ Diagnosis tradisional memerlukan waktu lama dan biaya tinggi. Machine Learning (
 
 - Preprocessing: Menyiapkan data MCU dengan teknik imputasi, encoding, dan feature engineering.
 - Model Development: Membandingkan 3 algoritma (Logistic Regression, Random Forest, XGBoost).
-- Evaluation: Mengevaluasi model dengan metrik klinis (F1-score) dan interpretasi SHAP.
+- Evaluation: Mengevaluasi model dengan metrik klinis (F1-score).
 
 ## Solution Statement
 
@@ -93,6 +93,25 @@ Fiturnya adalah :
 | Income Level | Pendapatan per tahun dalam dolar Amerika Serikat |
 | Age (years) | usia individu dalam tahun |
 
+## Exploratory Data Analysis
+
+Pada tahap ini dilakukan serangkaian proses untuk mempersiapkan data sebelum digunakan dalam pelatihan model machine learning.
+Data Preparation
+
+1. Pembersihan Data:
+   
+   - Kolom yang tidak relevan seperti "Vision Sharpness", "Hearing Ability", "Pollution Exposure", "Income Level", "Education Level" dihapus
+
+2. Transformasi Data:
+
+   - Pemisahan Kolom Tekanan Darah: Kolom "Blood Pressure (s/d)" dipisah menjadi "Systolic_BP" dan "Diastolic_BP"
+   - Penanganan Missing Values: Nilai kosong diisi dengan "None" untuk kolom:
+  
+        - Education Level
+        - Alcohol Consumption
+        - Chronic Diseases
+        - Medication Use
+        - Family History
 
 ### Analisis Data Numerik
 
@@ -123,28 +142,8 @@ Heatmap korelasi mengungkap hubungan menarik:
 
     
 ## Data Preparation
-
-Pada tahap ini dilakukan serangkaian proses untuk mempersiapkan data sebelum digunakan dalam pelatihan model machine learning.
-Data Preparation
-
-1. Pembersihan Data:
-   
-   - Kolom yang tidak relevan seperti "Vision Sharpness", "Hearing Ability", "Pollution Exposure", "Income Level", "Education Level" dihapus
-
-2. Transformasi Data:
-
-   - Pemisahan Kolom Tekanan Darah: Kolom "Blood Pressure (s/d)" dipisah menjadi "Systolic_BP" dan "Diastolic_BP"
-   - Penanganan Missing Values: Nilai kosong diisi dengan "None" untuk kolom:
-  
-        - Education Level
-        - Alcohol Consumption
-        - Chronic Diseases
-        - Medication Use
-        - Family History
      
-3. Feature Engineering:
-
-  - Membuat Risk Score sederhana berdasarkan pedoman klinis, contoh:
+1. Membuat Risk Score sederhana berdasarkan pedoman klinis, contoh:
    
       - Usia (>55 tahun = 2 poin, 45-55 = 1 poin)
       - Tekanan darah (≥140/90 = 2 poin, ≥130/85 = 1 poin)
@@ -166,11 +165,38 @@ Data Preparation
   - One-Hot Encoding untuk fitur kategorikal seperti Diet dan Smoking Status.
   - Standarisasi fitur numerik (misal: Blood Pressure) untuk algoritma berbasis jarak.
 
-## Modeling
+2. One Hot Encoding
 
-- membagi x dan y
-- membagi data train dan validation sebesar 30%
-- melakukan modelling sebagai berikut
+    Pada tahap ini, dilakukan One-Hot Encoding terhadap kolom-kolom kategorikal untuk mengubah nilai string menjadi bentuk numerik biner. Ini penting karena sebagian besar algoritma machine learning tidak dapat menangani data bertipe string secara langsung.
+
+    Langkah-langkah yang dilakukan:
+
+    - Inisialisasi encoder menggunakan OneHotEncoder dari Scikit-Learn dengan opsi handle_unknown='ignore', yang menghindari error jika ada kategori baru saat prediksi.
+    - Melatih encoder dan sekaligus mentransformasi fitur kategorikal menjadi matriks sparse biner.
+    - Mengubah hasil encoding menjadi array dan kemudian DataFrame, dengan nama kolom dihasilkan otomatis oleh get_feature_names_out().
+    - Menggabungkan DataFrame hasil encoding dengan data awal, menghapus kolom kategorikal asli karena sudah diwakili oleh kolom hasil encoding.
+
+    Hasil akhirnya adalah DataFrame df_analysis_encoded yang siap digunakan untuk modeling dengan semua fitur dalam bentuk numerik.
+
+3. Splitting Data Train dan Data Validation
+
+    Pada tahap ini, kita memisahkan data menjadi dua bagian:
+
+    X (Fitur): Kolom yang digunakan untuk memprediksi risiko, dengan menghapus kolom target (heart_disease_risk_score dan heart_disease_risk_category).
+
+    y (Target): Kolom yang berisi kategori risiko serangan jantung (heart_disease_risk_category).
+
+   Pembagian dilakukan dengan proporsi 70% untuk data training dan 30% untuk data validation menggunakan train_test_split, dengan parameter stratify=y untuk memastikan distribusi target (y) tetap seimbang antara kedua subset.
+
+4. Standarisasi
+
+    Penggunaan StandardScaler dalam preprocessing data bertujuan untuk menstandarisasi fitur numerik agar memiliki rata-rata 0 dan standar deviasi 1. Ini penting karena banyak algoritma machine learning—seperti K-Nearest Neighbors (KNN), Regresi Logistik, SVM, dan bahkan Neural Network sensitif terhadap skala fitur Melakukan transformasi standarisasi pada kolom numerik, baik di data pelatihan maupun validasi
+
+  Tujuan:
+  - Menormalkan skala data untuk meningkatkan performa dan konvergensi model.
+  - Agar tidak terjadi data leakage dari validation set.
+
+## Modeling
 
 1. Logistic Regression:
 
