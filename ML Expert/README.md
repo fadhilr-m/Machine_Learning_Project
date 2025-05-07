@@ -260,30 +260,30 @@ Metrik:
 
 | Model | Accuracy | Precision | Recall | F1-Score |
 | --- | --- | --- | --- | --- |
-| Logistic Regression |	0.85 | 0.83 | 0.82 | 0.83 |
-| Random Forest	| 0.89 | 0.93 | 0.79 | 0.83 |
+| Logistic Regression |	0.85 | 0.83 | 0.83 | 0.83 |
+| Random Forest	| 0.88 | 0.91 | 0.77 | 0.81 |
 | XGBoost | 0.95 | 0.94 | 0.90 | 0.92 |
 | Neural Network | 0.97 | 0.96 | 0.95 | 0.96 |
 
 1. Accuracy
 
     - Logistic Regression (0.85): 85% prediksi total yang benar, menunjukkan model ini mampu menangkap pola risiko kompleks
-    - Random Forest (0.89): 89% prediksi benar, tidak berbeda jauh dari Logreg dengan kemampuannya menangani non-linieritas
+    - Random Forest (0.88): 88% prediksi benar, tidak berbeda jauh dari Logreg dengan kemampuannya menangani non-linieritas
     - XGBoost (0.95): 95% benar—menunjukkan boostrap gradient sangat efektif
     - Neural Network (0.97): 97% benar, nilai tertinggi, model “menghafal” pola dengan sangat baik
 
 2. Precision
 
     - Logistic Regression (0.83): Dari pasien yang diprediksi “berisiko”, 83% benar-benar berisiko → banyak false positives
-    - Random Forest (0.93): 93% prediksi positif tepat → false positives sangat sedikit
+    - Random Forest (0.91): 91% prediksi positif tepat → false positives sangat sedikit
     - XGBoost (0.94) & Neural Network (0.96): Keduanya sangat andal dalam memprediksi risk-positives dengan kesalahan minimal
 
     Precision tinggi (RF, XGB, NN) berarti hampir tidak ada pasien sehat yang “dinyatakan berisiko” secara keliru.
 
 3. Recall
 
-    - Logistic Regression (0.82): Hanya mendeteksi 83% pasien berisiko → 18% “terlewat” (false negatives)
-    - Random Forest (0.79): Menangkap 79% risiko → lebih buruk dan masih ada 21% yang lolos
+    - Logistic Regression (0.83): Hanya mendeteksi 83% pasien berisiko → 17% “terlewat” (false negatives)
+    - Random Forest (0.77): Menangkap 77% risiko → lebih buruk dan masih ada 23% yang lolos
     - XGBoost (0.90): Deteksi 90% pasien berisiko → kesalahan false negatives jauh berkurang
     - Neural Network (0.95): Deteksi 95% risiko → paling sedikit pasien berisiko yang terlewat
 
@@ -292,7 +292,7 @@ Metrik:
 4. F1-Score
 
     - Logistic Regression (0.83): Harmonik precision & recall rendah → performa seimbang
-    - Random Forest (0.83): Keseimbangan cukup, didorong precision tinggi namun masih dibawah Logreg
+    - Random Forest (0.81): Keseimbangan cukup, didorong precision tinggi namun masih dibawah Logreg
     - XGBoost (0.92): Balance precision & recall sangat baik
     - Neural Network (0.96): Balance terbaik, menegaskan keunggulan komprehensif
 
