@@ -30,32 +30,21 @@ Diagnosis tradisional memerlukan waktu lama dan biaya tinggi. Machine Learning (
 ## Solution Statement
 
 Solusi 1: Data Preparation
-
-  - Handling Missing Values:
-       
-    - Numerik: Median Imputation (robust terhadap outlier).
-    - Kategorikal: Mode Imputation.
       
-  - Feature Engineering:
-    
-    Membuat Risk Score berdasarkan pedoman medis (misal: BMI > 30 = +1 poin risiko).
+  - Membuat Risk Score berdasarkan pedoman medis (misal: BMI > 30 = +1 poin risiko).
   
-  - Encoding:
-    
-    One-Hot Encoding untuk fitur kategorikal (contoh: Smoking Status).
+  - One-Hot Encoding untuk fitur kategorikal (contoh: Smoking Status).
 
 Solusi 2: Pemodelan
 
-- Baseline Model: Logistic Regression (interpretatif).
-- Comparative Models antara Random Forest, XGBoost, dan Neural Network
+  - Baseline Model: Logistic Regression (interpretatif).
+
+  - Comparative Models antara Random Forest, XGBoost, dan Neural Network
   
 
 Solusi 3: Evaluasi Klinis
 
-- Metrik Utama: F1-Score (keseimbangan precision-recall).
-- Kriteria Seleksi Model:
-  
-  - F1-score > 0.8 (untuk meminimalkan false negatives).
+  - Metrik Utama: F1-Score (keseimbangan precision-recall) > 0.8 (untuk meminimalkan false negatives).
 
 ## Data Understanding
 
