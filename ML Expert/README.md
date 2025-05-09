@@ -189,11 +189,62 @@ Heatmap korelasi mengungkap hubungan menarik:
 
 1. Logistic Regression:
 
+Logistic Regression adalah algoritma klasifikasi yang digunakan untuk memprediksi probabilitas suatu instance termasuk dalam kelas tertentu. Meskipun namanya mengandung "regression", ini adalah algoritma klasifikasi yang populer.
+
+Cara kerjanya:
+
+- Menggunakan fungsi sigmoid untuk memetakan output persamaan linier ke dalam range [0, 1]
+- Fungsi sigmoid: σ(z) = 1 / (1 + e^(-z)), dimana z adalah kombinasi linier fitur input
+- Output diinterpretasikan sebagai probabilitas kelas
+- Threshold default 0.5 digunakan untuk menentukan prediksi kelas (jika probabilitas ≥ 0.5, prediksi kelas 1; jika < 0.5, prediksi kelas 0)
+
+Pembahasan Parameter :
+
+- max_iter=1000:
+  
+  Menentukan jumlah maksimum iterasi untuk optimizer konvergen
+  
+  Default biasanya 100 dan bida dinaikkan untuk memastikan konvergensi pada dataset yang lebih kompleks
+
+- random_state=42:
+
+  - Mengontrol random shuffling data
+  - Digunakan untuk reproducibility hasil
+  - Default=None (tidak di-set)
+  - 42 adalah nilai arbitrer yang umum digunakan
+
+
   - Logistic Regression adalah model paling dasar dan paling mudah dipahami. Meskipun mungkin tidak memiliki performa terbaik, model ini sangat baik untuk baseline—menilai apakah model yang lebih kompleks dapat memberikan peningkatan yang signifikan dalam kinerja.
   - Logistic Regression bekerja baik ketika hubungan antar fitur bersifat linear, yang mungkin relevan untuk beberapa kasus medis sederhana di mana risiko didasarkan pada hubungan yang jelas antara fitur dan hasil.
   - Model ini sering digunakan dalam aplikasi dunia nyata di mana kecepatan interpretasi penting.
 
 2. Random Forest:
+
+Random Forest adalah algoritma ensemble learning yang menggunakan pendekatan "bagging" dengan membangun banyak decision tree dan menggabungkan hasilnya.
+
+Cara kerjanya:
+
+- Membuat banyak decision tree (disebut "forest") dengan:
+- Bagging: Setiap tree dilatih pada subset data yang di-sampling dengan penggantian (bootstrap sample)
+- Feature Randomness: Setiap split dalam tree hanya mempertimbangkan subset fitur yang dipilih secara acak
+
+Untuk prediksi klasifikasi:
+
+- Setiap tree memberikan "vote" untuk kelas tertentu
+- Kelas dengan vote terbanyak menjadi prediksi akhir
+- Mengurangi overfitting dengan averaging hasil dari banyak tree
+
+Pembahasan Parameter
+
+- n_estimators=100:
+  - Jumlah tree dalam forest
+  - Default=100
+  - Nilai lebih tinggi biasanya meningkatkan performa tetapi meningkatkan waktu komputasi
+
+- random_state=42:
+  - Mengontrol randomness untuk reproducibility
+  - Mengontrol bootstrap sampling dan seleksi fitur
+  - Default=None (tidak di-set)
 
   - Random Forest adalah model ensemble yang dapat menangani hubungan non-linear dan beragam jenis data. Model ini sangat baik dalam mengurangi overfitting, terutama saat berhadapan dengan data yang kompleks atau berisik.
   - Meskipun lebih sulit dipahami daripada Logistic Regression, RF memberikan hasil yang lebih stabil dan dapat dijelaskan sebagian melalui fitur penting yang diidentifikasi (misalnya, melalui feature importance).
@@ -201,11 +252,99 @@ Heatmap korelasi mengungkap hubungan menarik:
 
 3. XGBoost:
 
+XGBoost (Extreme Gradient Boosting) adalah algoritma ensemble learning berbasis boosting yang menggunakan gradient descent untuk meminimalkan loss function.
+
+Cara kerjanya:
+
+- Membangun decision trees secara sequential (berbeda dengan Random Forest yang parallel).
+- Setiap tree baru mencoba mengoreksi kesalahan prediksi tree sebelumnya (boosting).
+- Menggunakan gradient descent untuk mengoptimasi loss function (regresi: MSE, klasifikasi: log loss).
+- Memanfaatkan regularisasi (L1/L2) untuk mencegah overfitting.
+- Memiliki fitur built-in cross-validation dan dapat menangani missing values.
+
+Pembahasan Parameter
+
+- n_estimators=100
+
+  - Jumlah decision trees yang dibangun.
+  - Default = 100.
+  - Nilai lebih tinggi meningkatkan akurasi tetapi berisiko overfitting.
+
+- max_depth=6
+
+  - Kedalaman maksimum setiap tree.
+  - Default = 6.
+  - Nilai tinggi → model lebih kompleks (risiko overfitting).
+
+- learning_rate=0.1
+
+  - Langkah pembelajaran (shrinkage) untuk mengontrol kontribusi setiap tree.
+  - Default = 0.3.
+  - Nilai kecil (e.g., 0.01) membuat model lebih lambat tetapi lebih presisi.
+
+- random_state=42
+
+  - Untuk reproducibility hasil.
+  - Default = None (random).
+
+
   - XGBoost adalah model ensemble yang berbasis pada gradient boosting dan sangat terkenal karena kemampuannya untuk memberikan hasil yang sangat akurat dalam waktu relatif singkat. Model ini bekerja baik untuk menangani data yang imbalanced, seperti dalam prediksi risiko medis.
   - XGBoost unggul dalam menangani data dengan hubungan non-linear yang kompleks. Dengan berbagai teknik untuk menangani overfitting (seperti regularisasi), XGBoost sering kali menghasilkan model dengan performansi terbaik di kompetisi data science.
   - Keunggulannya adalah kemampuan tuning hyperparameter yang sangat baik, memungkinkan model ini untuk beradaptasi dengan baik pada dataset yang beragam
 
 4. Neural Network
+
+Cara Kerja Neural Network
+
+Neural Network adalah model machine learning yang terinspirasi dari struktur biologis otak manusia. Model ini terdiri dari lapisan-lapisan (layers) yang saling terhubung:
+
+- Input Layer: Menerima data fitur yang telah di-scale
+
+- Hidden Layers: Melakukan transformasi non-linear pada data melalui:
+
+  - Dense Layers: Setiap neuron terhubung penuh ke layer sebelumnya
+  - Activation Functions: Menggunakan ReLU (Rectified Linear Unit) untuk non-linearitas
+  - Dropout Layer: Untuk regularisasi dengan mematikan neuron secara acak
+
+- Output Layer:
+
+  - Menggunakan softmax untuk klasifikasi multi-kelas
+  - Jumlah neuron sesuai dengan jumlah kelas target
+
+Persiapan Data yang Mendukung Neural Network
+
+(a) Feature Scaling
+
+   - Neural Network sangat sensitif terhadap skala data.
+   - Dengan Feature Scaling Ini membuat training lebih stabil dan konvergen lebih cepat.
+
+(b) Label Encoding
+
+   - Label kategori di-encode ke integer dengan LabelEncoder:
+   - Format ini cocok untuk loss function sparse_categorical_crossentropy yang digunakan.
+
+Arsitektur yang Dipilih
+
+(a) Struktur Dasar
+
+Input Layer:
+
+Menyesuaikan dimensi fitur (shape=(X_train_scaled.shape[1],)).
+
+Hidden Layers:
+
+- 2 Dense Layers (64 dan 32 neuron) dengan aktivasi ReLU
+- ReLU dipilih karena menghindari masalah vanishing gradient dan mempercepat training.
+- Dropout = 0.5
+
+Output Layer:
+
+Menggunakan softmax untuk probabilitas multi-kelas.
+
+(b) Optimasi dan Loss Function
+
+- Optimizer: Adam (adaptif learning rate, cocok untuk kebanyakan kasus).
+- Loss Function: sparse_categorical_crossentropy (efisien untuk label integer).
 
   - Neural Network sangat baik dalam mempelajari pola yang sangat kompleks di data besar. Model ini sangat berguna ketika hubungan antara fitur dan label tidak jelas atau linear.
   - Neural Networks dapat memberikan akurasi yang lebih baik, terutama ketika data memiliki banyak fitur atau sangat rumit. Meskipun kompleks dan memerlukan lebih banyak data, NN dapat memberikan hasil yang luar biasa di dataset besar dan variatif.
