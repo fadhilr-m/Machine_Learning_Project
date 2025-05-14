@@ -351,19 +351,12 @@ Sebuah DataFrame dengan hasil evaluasi untuk masing-masing model, yang meliputi:
 
 ### 📊 Hasil Evaluasi Model (Setelah Peningkatan):
 
-Model 	Precision 	Recall 	F1-Score 	User Evaluated
-0 	Content-Based 	0.146 	0.62 	0.221 	100
-1 	Collaborative 	0.147 	0.63 	0.223 	100
-2 	Hybrid 	0.147 	0.63 	0.223 	100
+| Model | Precision | Recall | F1-Score | EvaluatedScore |
+| --- | --- | --- | --- | --- |
+| Content-Based |	0.146 | 0.62 | 0.221 | 100 |
+| Collaborative | 0.147 | 0.63 | 0.223 | 100 |
+| Hybrid | 0.147 | 0.63 | 0.223 | 100 |
 
-| Model                  | Precision | Jumlah total bobot |
-| ---------------------- | --------------- | ------------------ |
-| Genre (20 dimensi SVD) | 0.4 per fitur   | 20 × 0.4 = 8.0     |
-| Score                  | 0.3             | 0.3                |
-| Duration               | 0.15            | 0.15               |
-| Members                | 0.1             | 0.1                |
-| Completion rate        | 0.05            | 0.05               |
-| **Total**              | —               | **8.6**            |
 
 ### Interpretasi Hasil Evaluasi Model (Setelah Peningkatan)
 
@@ -449,7 +442,7 @@ Rekomendasi Pengembangan Selanjutnya
 
 - Penerapan Sistem Evaluasi Online (A/B Testing)
 
-Lakukan evaluasi nyata dengan pengguna sesungguhnya untuk mengukur dampak perubahan model terhadap keterlibatan pengguna secara langsung.
+  Lakukan evaluasi nyata dengan pengguna sesungguhnya untuk mengukur dampak perubahan model terhadap keterlibatan pengguna secara langsung.
 
 Daftar Referensi
 
