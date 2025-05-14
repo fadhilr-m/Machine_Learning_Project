@@ -1,7 +1,7 @@
-# 📝 LAPORAN PROYEK SISTEM REKOMENDASI ANIME
+# LAPORAN PROYEK SISTEM REKOMENDASI ANIME
 
 
-# 1. 📌 Project Overview
+# 1. Project Overview
 
 ## Latar Belakang
 
@@ -18,7 +18,7 @@ Proyek ini penting karena:
 - Dapat diaplikasikan di platform streaming seperti MyAnimeList atau Crunchyroll.
 
 
-# 2. 💼 Business Understanding
+# 2. Business Understanding
 
 ## Problem Statements
 
@@ -39,7 +39,7 @@ Proyek ini penting karena:
 - Hybrid Approach: Menggabungkan kedua metode untuk meningkatkan kualitas rekomendasi.
 
 
-# 3. 📊 Data Understanding
+# 3. Data Understanding
 
 Dataset yang digunakan berasal dari Kaggle - Anime Recommendation Database 2020. Dataset ini terdiri dari 4 file yaitu :
 
@@ -208,7 +208,7 @@ Digunakan MinMaxScaler untuk menskalakan semua nilai ke rentang [0, 1], sehingga
 - Digunakan csr_matrix untuk memastikan semua data tetap dalam format sparse demi efisiensi memori dan komputasi.
 
 
-## 5. ⚙️ Modeling 
+## 5. Modeling 
 
 ### Similarity-based
 
@@ -349,7 +349,7 @@ Sebuah DataFrame dengan hasil evaluasi untuk masing-masing model, yang meliputi:
 - User Evaluated: Jumlah pengguna yang dievaluasi.
 
 
-### 📊 Hasil Evaluasi Model (Setelah Peningkatan):
+### Hasil Evaluasi Model (Setelah Peningkatan):
 
 | Model | Precision | Recall | F1-Score | EvaluatedScore |
 | --- | --- | --- | --- | --- |
