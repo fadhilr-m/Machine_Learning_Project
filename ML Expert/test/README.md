@@ -49,15 +49,11 @@ Dataset yang digunakan berasal dari Kaggle - Anime Recommendation Database 2020.
 
    - user_id: ID pengguna yang dihasilkan secara acak dan tidak dapat diidentifikasi.
    - anime_id: ID MyAnimeList dari anime (misalnya, 1).
-   - score: Skor yang diberikan oleh pengguna antara 1 hingga 10, dengan nilai 0 jika pengguna belum memberikan skor.
    - watching_status: Status anime dalam daftar anime pengguna (misalnya, 2).
    - watched_episodes: Jumlah episode yang telah ditonton oleh pengguna.
+   - rating: Rating yang diberikan oleh pengguna.
 
-    Dataset ini memiliki:
-
-   - 109 juta baris data
-   - 17.562 anime berbeda
-   - 325.772 pengguna berbeda
+    Dataset yang digunakan sebanyak 1 juta baris data (dataset aslinya : 109 juta baris data) karena keterbatasan systemn RAM Google Colab.
 
 
 2. rating_complete.csv
@@ -71,7 +67,7 @@ Dataset yang digunakan berasal dari Kaggle - Anime Recommendation Database 2020.
    
    - user_id: ID pengguna yang dihasilkan secara acak.
    - anime_id: ID MyAnimeList dari anime yang telah diberi rating oleh pengguna.
-   - rating: Rating yang diberikan oleh pengguna.
+   - rating: Rating yang diberikan oleh pengguna untuk anime
 
 3. anime.csv
 
@@ -117,6 +113,30 @@ Variabel/Fitur Penting
 
 - Fitur Konten: Genres, Score, duration_min, Type
 - Fitur Interaksi Pengguna: user_id, anime_id, rating, watching_status
+
+## Insight dari masing-masing dataset
+
+### Insight Dataset anime.csv
+
+- Terdapat lonjakan besar di tengah — kemungkinan besar pada skor 6 atau 7, yang umum terjadi pada banyak dataset rating pengguna.
+- Sebagian besar anime memiliki jumlah episode <50
+- Mayoritas anime ditujukan untuk remaja (PG-13) dan semua umur (G)
+- Konten dewasa seperti Rx - Hentai, R+, dan R - 17+ masih cukup signifikan jumlahnya.
+- Ada proporsi kecil dengan Unknown.
+- Genre paling populer dalam industri anime didominasi oleh Comedy, diikuti oleh Action dan Fantasy, yang menunjukkan preferensi kuat audiens terhadap hiburan ringan dan petualangan. Genre seperti Drama, Slice of Life, dan Romance juga tetap relevan, menandakan variasi kebutuhan emosional dalam konsumsi konten anime.
+
+### Insight dari rating.csv
+
+- Mayoritas rating berada di rentang nilai 6 hingga 10, dengan puncak tertinggi pada rating 8.
+
+### Insgiht dari dataset animelist_df
+
+- Sebagian besar pengguna dalam dataset telah menyelesaikan anime, diikuti oleh sejumlah besar yang berencana untuk menonton, sementara proporsi pengguna yang sedang menonton, berhenti menonton, atau menunda menonton relatif kecil.
+- Distribusi jumlah episode yang ditonton sangat condong ke kiri, dengan sebagian besar interaksi terjadi pada jumlah episode yang sangat sedikit, sementara hanya sebagian kecil interaksi yang melibatkan jumlah episode yang sangat banyak. Ini menunjukkan bahwa banyak pengguna mungkin baru memulai menonton anime atau belum menonton banyak episode dari anime yang ada dalam daftar mereka
+- Anime dengan ID 1535 menjadi yang paling banyak berinteraksi dalam dataset, diikuti oleh variasi jumlah interaksi di antara sembilan anime teratas lainnya, dengan ID 20 dan 10620 menunjukkan jumlah interaksi yang relatif lebih rendah dalam kelompok ini.
+- Pengguna dengan ID 20807 adalah yang paling aktif dalam dataset berdasarkan jumlah interaksi, diikuti oleh variasi tingkat aktivitas di antara sembilan pengguna teratas lainnya, dengan ID 4773, 6852, dan 18355 menunjukkan tingkat interaksi yang relatif lebih rendah dalam kelompok ini. Ini mengindikasikan adanya pengguna yang secara signifikan lebih terlibat dibandingkan dengan yang lain.
+- Pengguna cenderung telah menonton lebih banyak episode pada anime yang masih mereka ikuti ("Watching") atau yang sudah mereka selesaikan ("Completed"). Sementara itu, anime yang ditunda ("On Hold") atau dihentikan ("Dropped") memiliki rata-rata episode yang ditonton lebih sedikit, dan anime yang baru direncanakan untuk ditonton ("Plan to Watch") memiliki rata-rata episode ditonton yang paling rendah.
+
 
 # 4. 🧹 Data Preparation
 
@@ -418,6 +438,61 @@ Jika terjadi kesalahan selama proses (misalnya, jika input tidak valid atau ada 
 | `user_id` saja         | Collaborative Filtering            |
 | `anime_id` + `user_id` | Hybrid Filtering                   |
 | Tidak ada              | Rekomendasi berdasarkan Popularity |
+
+### Hasilnya
+
+#### Jika user memasukan ID anime dan ID Pengguna maka model akan menampilkan hasil sebagai berikut
+🎯 Sistem Rekomendasi Anime
+
+Masukkan salah satu dari informasi berikut (atau keduanya):
+
+Masukkan ID anime favorit Anda (kosongkan jika tidak ada): 1
+
+Masukkan ID pengguna Anda (kosongkan jika tidak ada): 1
+
+🔎 Mencari rekomendasi...
+
+✨ Rekomendasi untuk Anda:
+
+No | MAL_ID	| Name | Genres | Score |	completion_rate |
+----- | ------------	| ---------------- | ----------------- | --------------- |	------------------- |
+0 | 4037 | Cowboy Bebop: Yose Atsume Blues |	Action Adventure Comedy Drama Sci-Fi Space |	7.44 | 0.657283 |
+1 |	1168 | Musekinin Kanchou Tylor OVA |	Adventure Comedy Drama Military Sci-Fi Space |	7.25 |	0.558442 |
+2 |	2203 |	Waga Seishun no Arcadia: Mugen Kidou SSX |	Action Adventure Drama Sci-Fi Space |	7.40 |	0.429630 |
+3 |	1651 |	Uchuu Senkan Yamato 2 |	Action Military Sci-Fi Adventure Space Drama |	7.42 |	0.461538 |
+4 |	2202 |	Waga Seishun no Arcadia |	Action Adventure Drama Sci-Fi Space |	7.49 |	0.548523 |
+5 |	1081 |	Space Pirate Captain Herlock: Outside Legend |	Action Adventure Space Drama Sci-Fi Seinen |	7.36 |	0.457143 |
+6 |	2470 |	Uchuu Kaizoku Captain Herlock: Arcadia-gou no |	Action Sci-Fi Adventure Space Drama |	6.96 |	0.606061 |
+7 |	3069 |	Yamato yo Towa ni |	Action Military Sci-Fi Adventure Space Drama |	6.61 |	0.460526 |
+8 |	1645 |	Herlock Saga: Nibelung no Yubiwa |	Action Sci-Fi Adventure Space Drama Seinen |	6.71 |	0.571429 |
+9 |	1336 |	Kyoushoku Soukou Guyver II |	Action Adventure Drama Horror Sci-Fi |	7.03 |	0.662100 |
+
+
+#### Jika tidak memasukkan ID anime dan ID pengguna maka model akan menampilkan Top 10 Rekomendasi anime. berikut hasilnya
+
+🎯 Sistem Rekomendasi Anime
+
+Masukkan salah satu dari informasi berikut (atau keduanya):
+
+Masukkan ID anime favorit Anda (kosongkan jika tidak ada): 
+
+Masukkan ID pengguna Anda (kosongkan jika tidak ada): 
+
+🔎 Mencari rekomendasi...
+
+✨ Rekomendasi untuk Anda:
+No | MAL_ID	| Name | Genres | Score |	completion_rate |
+----- | ------------	| ---------------- | ----------------- | --------------- |	------------------- |
+0 |	5114 |	Fullmetal Alchemist: Brotherhood	Action Military  | Adventure Comedy Drama Ma...	9.19 |	0.732319 |
+1 |	9253 |	Steins;Gate	 | Thriller Sci-Fi |	9.11 |	0.696696 |
+2 |	38524 |	Shingeki no Kyojin Season 3 Part 2 |	Action Drama Fantasy Military Mystery Sho... |	9.10 |	0.873288 |
+3 |	11061 | Hunter x Hunter (2011) |	Action Adventure Fantasy Shounen Super Power |	9.10 |	0.647456 |
+4 |	28977 |	Gintama° |	Action Comedy Historical Parody Samurai S... |	9.10 |	0.478271 |
+5 |	9969 |	Gintama' |	Action Sci-Fi Comedy Historical Parody Sa... |	9.08 |	0.561683 |
+6 |	15417 |	Gintama': Enchousen |	Action Comedy Historical Parody Samurai S... |	9.04 |	0.677927 |
+7 |	28851 |	Koe no Katachi |	Drama School Shounen |	9.00 |	0.818555 |
+8 |	35180 |	3-gatsu no Lion 2nd Season |	Drama Game Seinen Slice of Life |	9.00 |	0.586541 |
+9 |	34096 |	Gintama. |	Action Comedy Historical Parody Samurai S... |	8.99 |	0.624245 |
 
 
 ## 8. Kesimpulan
