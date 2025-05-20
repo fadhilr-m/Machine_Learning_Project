@@ -137,24 +137,23 @@ Variabel/Fitur Penting
 - Pengguna dengan ID 20807 adalah yang paling aktif dalam dataset berdasarkan jumlah interaksi, diikuti oleh variasi tingkat aktivitas di antara sembilan pengguna teratas lainnya, dengan ID 4773, 6852, dan 18355 menunjukkan tingkat interaksi yang relatif lebih rendah dalam kelompok ini. Ini mengindikasikan adanya pengguna yang secara signifikan lebih terlibat dibandingkan dengan yang lain.
 - Pengguna cenderung telah menonton lebih banyak episode pada anime yang masih mereka ikuti ("Watching") atau yang sudah mereka selesaikan ("Completed"). Sementara itu, anime yang ditunda ("On Hold") atau dihentikan ("Dropped") memiliki rata-rata episode yang ditonton lebih sedikit, dan anime yang baru direncanakan untuk ditonton ("Plan to Watch") memiliki rata-rata episode ditonton yang paling rendah.
 
+Dikarenakan masih terdapat anomali pada anime_df seperti outlier, nilai 'Unknown', hingga durasi menit. maka akan dilakukan pembersihan data
 
 # 4. 🧹 Data Preparation
 
 Langkah-langkah Data Preparation
 
-## 1. Load Dataset
-
-Membaca file anime.csv, rating_complete.csv, animelist.csv, dan watching_status.csv yang merupakan sumber data utama untuk membangun sistem rekomendasi. Data ini berisi informasi metadata anime, skor pengguna, status menonton, serta histori interaksi pengguna
-
-karena animelist.csv memiliki 109 juta baris data, maka dibatasi hingga 1,000,0000 data saja karena keterbatasan dari RAM Google Colab.
-
-## 2. Pembersihan Data
+## 1. Pembersihan Data anime_df
 
 ### a. Membuat fungsi untuk membersihkan nilai pada kolom Score.
 
 - Jika nilai adalah 'Unknown', maka diganti menjadi np.nan (Not a Number, atau nilai kosong).
 - Jika nilai dapat dikonversi ke float, dikembalikan sebagai angka desimal.
 - Jika gagal (karena format tidak sesuai), nilai juga dikembalikan sebagai np.nan.
+- apply(clean_score) membersihkan setiap baris di kolom Score menggunakan fungsi di atas.
+- Nilai kosong (NaN) setelah dibersihkan akan digantikan dengan nilai median dari kolom Score—langkah umum dalam imputasi data numerik agar distribusi tidak bias oleh outlier.
+- Tujuannya adalah agar semua anime memiliki skor numerik yang valid.
+
   
 ### b. Membersihkan Kolom Genres
 
@@ -167,22 +166,27 @@ karena animelist.csv memiliki 109 juta baris data, maka dibatasi hingga 1,000,00
 - Jika tidak ada angka atau data kosong, hasilnya adalah 0.
 - Hasil parsing ini disimpan ke kolom baru duration_min, yang akan berguna untuk filtering berdasarkan durasi (misalnya untuk rekomendasi saat makan siang).
 
+Semua data sudah dilakukan pembersihan
 
-## 3. Data Preprocessing
+## 2. Data Preprocessing
 
-### a. Menghitung Engagement Metrics
+### a. Batasi dataset animelist.csv
+
+karena animelist.csv memiliki 109 juta baris data, maka dibatasi hingga 10,000,0000 data saja karena keterbatasan dari RAM Google Colab.
+
+### b. Menghitung Engagement Metrics
 
 - Dataset animelist_df berisi interaksi user terhadap anime, seperti berapa episode yang ditonton (watched_episodes) dan status menontonnya (watching_status).
 - groupby('anime_id') mengelompokkan data berdasarkan ID anime.
 - avg_watched_episodes: rata-rata jumlah episode yang ditonton untuk tiap anime.
 - completion_rate: persentase user yang menyelesaikan anime tersebut (watching_status == 2 biasanya berarti "Completed").
 
-### b. Menggabungkan Engagement Metrics ke Dataset Anime
+### c. Menggabungkan Engagement Metrics ke Dataset Anime
 
 - Menggabungkan (merge) anime_df dengan engagement_stats berdasarkan ID anime.
 - Jika ada anime yang tidak memiliki engagement data, nilainya diisi dengan 0 agar tetap bisa digunakan dalam modeling
 
-### c. Menentukan Tingkat Engagement (Low, Medium, High)
+### d. Menentukan Tingkat Engagement (Low, Medium, High)
 
 - Membuat fitur baru engagement_level berdasarkan completion rate:
 
@@ -192,23 +196,23 @@ karena animelist.csv memiliki 109 juta baris data, maka dibatasi hingga 1,000,00
      
 Ini memberi kita indikator seberapa menarik atau mengikat suatu anime bagi penonton..
 
-### d. Membuat Fitur Baru: enhanced_genres
+### e. Membuat Fitur Baru: enhanced_genres
 
 - Menggabungkan teks genre asli dengan level engagement untuk menciptakan fitur enhanced_genres. Contoh: "Action Comedy" + "high" → "Action Comedy high"
 
-### e. TF-IDF Vectorization terhadap Enhanced Genres
+### f. TF-IDF Vectorization terhadap Enhanced Genres
 
 - TF-IDF (Term Frequency–Inverse Document Frequency) digunakan untuk mengubah teks genre (yang sudah diperkaya dengan engagement_level) menjadi representasi numerik.
 - max_features=100: hanya mempertahankan 100 kata/term yang paling informatif dari genre.
 - Output genre_tfidf berbentuk sparse matrix (matriks jarang) karena kebanyakan anime hanya memiliki sebagian kecil dari seluruh genre yang tersedia.
 
-### f. Reduksi Dimensi dengan Truncated SVD
+### g. Reduksi Dimensi dengan Truncated SVD
 
 - TF-IDF menghasilkan ratusan dimensi sparse. Agar efisien untuk dihitung dan menghindari curse of dimensionality, digunakan SVD (Singular Value Decomposition).
 - n_components=20: mereduksi representasi genre menjadi hanya 20 dimensi utama.
 
 
-## 4. Normalisasi Data
+## 3. Normalisasi Data
 
 ### a. Normalisasi Fitur Numerik
 
@@ -228,7 +232,7 @@ Digunakan MinMaxScaler untuk menskalakan semua nilai ke rentang [0, 1], sehingga
 - Digunakan csr_matrix untuk memastikan semua data tetap dalam format sparse demi efisiensi memori dan komputasi.
 
 
-## 5. Modeling 
+# Modeling 
 
 ### Similarity-based
 
@@ -288,6 +292,26 @@ Jika anime_id tidak ditemukan di dataset:
 
 Fungsi akan memberikan rekomendasi fallback berdasarkan popularitas.
 
+outputnya:
+
+=== CONTENT-BASED RECOMMENDATIONS ===
+
+🔹 Anime: Cowboy Bebop (ID:20)
+
+MAL_ID | Name | 	Genres | 	Score | 	completion_rate |
+----- | ------------	| ---------------- | ----------------- | --------------- |
+813 | 	Dragon Ball Z | 	Action Adventure Comedy Fantasy Martial Ar... | 	8.16 | 	0.871964 |
+10686 | Naruto: Honoo no Chuunin Shiken! Naruto vs. Ko... | Action Adventure Martial Arts Shounen Supe... |	7.16 | 	0.884615 |
+137 | 	Hunter x Hunter: Original Video Animation | 	Action Adventure Super Power Shounen | 	8.33 | 	0.839623 |
+6033 | 	Dragon Ball Kai |  	Action Adventure Comedy Fantasy Martial Ar... | 	7.73 | 	0.702734 |
+13667 | 	Naruto: Shippuuden Movie 6 - Road to Ninja | 	Action Adventure Super Power Martial Arts ... | 	7.67 | 	0.909860 |
+594 | 	Naruto: Takigakure no Shitou - Ore ga Eiyuu Da... | Action Adventure Comedy Shounen Super Power | 	6.76 | 	0.926829 |
+1735 | 	Naruto: Shippuuden | 	Action Adventure Comedy Super Power Martia... | 	8.16 | 	0.417952 |
+10589 | 	Naruto: Shippuuden Movie 5 - Blood Prison | 	Action Adventure Martial Arts Super Power ... | 	7.46 | 	0.902294 |
+10189 | 	Hunter x Hunter Pilot | 	Action Adventure Shounen Super Power | 	7.20 | 	0.752941 |
+8246 | 	Naruto: Shippuuden Movie 4 - The Lost Tower | 	Action Comedy Martial Arts Shounen Super P... | 	7.42 | 	0.892743 |
+
+
 👤 Mode 2 – Collaborative Filtering (jika user_id diberikan)
 
     elif user_id:
@@ -302,6 +326,25 @@ Fungsi memberikan rekomendasi berdasarkan anime yang disukai user (rating tertin
 - Pilih 3 anime dengan rating tertinggi dari user tersebut.
 - Untuk setiap anime favorit tersebut, lakukan rekomendasi mirip menggunakan content-based filtering.
 - Gabungkan hasil rekomendasi, hilangkan duplikat, dan filter kualitas dengan post-filter.
+
+outputnya
+
+=== COLLABORATIVE FILTERING ===
+
+🔹 Recommendations for User ID: 1234
+
+MAL_ID | Name | 	Genres | 	Score | 	completion_rate |
+----- | ------------	| ---------------- | ----------------- | --------------- |
+22265 | 	Free!: Eternal Summer | 	Slice of Life Comedy Sports Drama School | 	7.68 | 	0.742638 |
+1764 | 	Slam Dunk (Movie) | 	Comedy Drama School Shounen Slice of Life ... | 	7.36 | 	0.778325 |
+2499 | Slam Dunk: Hoero Basketman-damashii! Hanamichi... | Comedy Drama School Shounen Slice of Life ... | 	7.68 | 	0.744382 |
+2498 | Slam Dunk: Shouhoku Saidai no Kiki! Moero Saku... | Comedy Drama School Shounen Slice of Life ... | 	7.58 | 	0.762178 |
+1861 | 	Slam Dunk: Zenkoku Seiha Da! - Sakuragi Hanamichi | 	Slice of Life Comedy Sports Drama School ...|  	7.55|  	0.764045| 
+14397 | 	Chihayafuru 2 | 	Drama Game Josei School Slice of Life Sports | 	8.43 | 	0.702797 |
+36704 | 	Free!: Dive to the Future | 	Comedy Drama School Slice of Life Sports | 	7.59 | 	0.527100 |
+30415 | 	High☆Speed!: Free! Starting Days | 	Comedy Drama School Slice of Life Sports | 	7.87  |	0.607401 |
+20903 | 	Harmonie | 	Slice of Life Psychological Drama School | 	7.31 | 	0.703468 |
+35507 | 	Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu ... | 	Slice of Life Psychological Drama School | 	7.85 | 	0.740501 |
 
 🌟 Mode 3 – Popular-Based Recommendation (Fallback)
 
@@ -331,6 +374,26 @@ Filter ini bertujuan menyaring anime dengan kualitas rendah, agar hasil lebih re
 
 - Score ≥ 6.5
 - completion_rate ≥ 0.3 (30%)
+
+outputnya
+
+=== Hybrid Filtering ===
+
+🔹 Top 10 Overall Recommendations
+
+MAL_ID | Name | 	Genres | Score | 	completion_rate |
+----- | ------------	| ---------------- | ----------------- | --------------- |
+5114 | 	Fullmetal Alchemist: Brotherhood | 	Action Military Adventure Comedy Drama Ma... | 	9.19 | 	0.732319 |
+9253 | 	Steins;Gate | 	Thriller Sci-Fi | 	9.11 |  	0.696696 | 
+38524 | 	Shingeki no Kyojin Season 3 Part 2 | 	Action Drama Fantasy Military Mystery Sho... | 	9.10 | 	0.873288 |
+11061 | 	Hunter x Hunter (2011) | 	Action Adventure Fantasy Shounen Super Power | 	9.10 | 	0.647456 |
+28977 | 	Gintama° | 	Action Comedy Historical Parody Samurai S... | 	9.10  |	0.478271 |
+9969 | 	Gintama' | 	Action Sci-Fi Comedy Historical Parody Sa... | 	9.08 | 	0.561683 |
+15417 | 	Gintama': Enchousen | 	Action Comedy Historical Parody Samurai S... | 	9.04 | 	0.677927 |
+28851 | 	Koe no Katachi | 	Drama School Shounen | 	9.00 | 	0.818555 |
+35180 | 	3-gatsu no Lion 2nd Season | 	Drama Game Seinen Slice of Life | 	9.00 | 	0.586541 |
+34096 | 	Gintama. | 	Action Comedy Historical Parody Samurai S... | 	8.99 | 	0.624245 |
+
 
 ## 6. Evaluasi
 
@@ -373,30 +436,30 @@ Sebuah DataFrame dengan hasil evaluasi untuk masing-masing model, yang meliputi:
 
 | Model | Precision | Recall | F1-Score | EvaluatedScore |
 | --- | --- | --- | --- | --- |
-| Content-Based |	0.146 | 0.62 | 0.221 | 100 |
-| Collaborative | 0.147 | 0.63 | 0.223 | 100 |
-| Hybrid | 0.147 | 0.63 | 0.223 | 100 |
+| Content-Based |	0.089 | 	0.51 | 	0.142 | 	100 |
+| Collaborative | 0.108 | 	0.49 | 	0.167 | 	100 |
+| Hybrid | 0.147 | 0.085 | 	0.44 | 	0.133 | 	100 |
 
 
 ### Interpretasi Hasil Evaluasi Model (Setelah Peningkatan)
 
 Dari hasil evaluasi yang diberikan, kita dapat melihat bahwa semua model (Content-Based, Collaborative, dan Hybrid) menunjukkan nilai Precision, Recall, dan F1-Score yang serupa. Berikut adalah beberapa penjelasan untuk hasil tersebut:
 
-- Precision: 0.146 - 0.147
-  
-  Precision mengukur seberapa banyak rekomendasi yang relevan di antara semua rekomendasi yang diberikan. Nilai precision yang relatif rendah ini menunjukkan bahwa banyak anime yang direkomendasikan oleh model tidak relevan dengan preferensi pengguna. Precision yang rendah ini bisa disebabkan oleh model yang memberikan rekomendasi berbasis similarity yang tidak sepenuhnya cocok dengan preferensi pengguna atau ketidakmampuan model dalam menangkap nuansa preferensi individual pengguna.
-  
-- Recall: 0.62 - 0.63
-  
-  Recall mengukur seberapa banyak anime yang relevan di antara semua yang seharusnya direkomendasikan. Nilai recall yang relatif tinggi ini menunjukkan bahwa model cukup baik dalam menemukan anime yang relevan untuk pengguna, namun masih ada ruang untuk perbaikan dalam mengidentifikasi semua anime yang relevan. Recall yang cukup baik ini menunjukkan bahwa model tidak terlalu banyak melewatkan anime yang disukai pengguna. Namun, beberapa anime yang seharusnya direkomendasikan mungkin masih hilang.
+- Precision: 0.084 - 0.106
 
-- F1-Score: 0.221 - 0.223
-  
-  F1-Score adalah rata-rata harmonis dari Precision dan Recall. Nilai F1-Score yang rendah ini menunjukkan bahwa meskipun recall cukup baik, precision-nya masih rendah, yang menarik perhatian pada trade-off antara precision dan recall. F1-Score yang rendah mengindikasikan bahwa meskipun model mampu menemukan beberapa anime relevan, kualitas rekomendasinya perlu lebih ditingkatkan.
+   Precision mengukur seberapa banyak rekomendasi yang relevan di antara semua rekomendasi yang diberikan. Nilai precision yang relatif rendah ini menunjukkan bahwa banyak anime yang direkomendasikan oleh model tidak relevan dengan preferensi pengguna. Precision yang rendah ini bisa disebabkan oleh model yang memberikan rekomendasi berbasis similarity yang tidak sepenuhnya cocok dengan preferensi pengguna atau ketidakmampuan model dalam menangkap nuansa preferensi individual pengguna.
+
+- Recall: 0.48 - 0.51
+
+   Recall mengukur seberapa banyak anime yang relevan di antara semua yang seharusnya direkomendasikan. Nilai recall yang relatif tinggi ini menunjukkan bahwa model cukup baik dalam menemukan anime yang relevan untuk pengguna, namun masih ada ruang untuk perbaikan dalam mengidentifikasi semua anime yang relevan. Recall yang cukup baik ini menunjukkan bahwa model tidak terlalu banyak melewatkan anime yang disukai pengguna. Namun, beberapa anime yang seharusnya direkomendasikan mungkin masih hilang.
+
+- F1-Score: 0.138 - 0.165
+
+   F1-Score adalah rata-rata harmonis dari Precision dan Recall. Nilai F1-Score yang rendah ini menunjukkan bahwa meskipun recall cukup baik, precision-nya masih rendah, yang menarik perhatian pada trade-off antara precision dan recall. F1-Score yang rendah mengindikasikan bahwa meskipun model mampu menemukan beberapa anime relevan, kualitas rekomendasinya perlu lebih ditingkatkan.
 
 - User Evaluated: 100
-  
-  Jumlah pengguna yang dievaluasi adalah 100, yang menunjukkan bahwa evaluasi mencakup sampel yang cukup besar, memberi gambaran yang lebih akurat mengenai kinerja model di seluruh pengguna.
+
+   Jumlah pengguna yang dievaluasi adalah 100, yang menunjukkan bahwa evaluasi mencakup sampel yang cukup besar, memberi gambaran yang lebih akurat mengenai kinerja model di seluruh pengguna.
 
 
 ## 7. User Input
