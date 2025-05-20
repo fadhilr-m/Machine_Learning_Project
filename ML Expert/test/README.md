@@ -53,7 +53,7 @@ Dataset yang digunakan berasal dari Kaggle - Anime Recommendation Database 2020.
    - watched_episodes: Jumlah episode yang telah ditonton oleh pengguna.
    - rating: Rating yang diberikan oleh pengguna.
 
-    Dataset yang digunakan sebanyak 1 juta baris data (dataset aslinya : 109 juta baris data) karena keterbatasan systemn RAM Google Colab.
+    Dataset yang digunakan sebanyak 10 juta baris data (dataset aslinya : 109 juta baris data) karena keterbatasan systemn RAM Google Colab.
 
 
 2. rating_complete.csv
